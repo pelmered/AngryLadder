@@ -18,7 +18,7 @@ gulp.task('postcss', function () {
     .pipe(gulp.dest('./assets/css/'));
 });
 
-gulp.watch( './public/assets/css/src/*.css', function() {
+gulp.watch( './assets/css/src/*.css', function() {
         gulp.start( 'postcss' );
     });
 
