@@ -19,6 +19,13 @@ class Player extends Model
     {
 
     }
+    
+    public function adjustRating( $adjustment )
+    {
+        $this->rating += $adjustment;
+
+        $this->save();
+    }
 
 
     public function plugins()

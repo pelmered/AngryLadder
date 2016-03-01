@@ -35,7 +35,14 @@ $app->get('/v1/games', function () use ($app) {
 
 $app->group(['prefix' => 'v1/games', 'namespace' => 'App\Http\Controllers', 'middleware' => 'throttle:30000'], function() use ($app) {
     $app->get('/', ['uses' => 'GamesController@index']);
-    //$app->get('/{id}', 'GamesController@show');
+
+    $app->get('/{id}', 'GamesController@show');
+
+    $app->post('/', 'GamesController@store');
+
+    $app->put('/{id}', 'GamesController@update');
+
+
 });
 
 
@@ -49,6 +56,5 @@ $app->get('/v1/games', [
 
 //$app->get('v1/games/challenge', 'ExampleController@index');
 
-$app->post('v1/games/', 'GamesController@create');
 
 

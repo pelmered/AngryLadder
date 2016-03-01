@@ -25,8 +25,6 @@ class Games extends Migration
                 $table->integer('score1')->unsigned();
                 $table->integer('score2')->unsigned();
 
-                $table->dateTime('svn_timestamp');
-
                 $table->timestamps();
             });
         }

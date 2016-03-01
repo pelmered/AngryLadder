@@ -14,7 +14,8 @@ class PlayersTableSeeder extends Seeder {
         foreach( range(1, 10 ) as $index )
         {
             DB::table('players')->insert([
-                'name' => $faker->name,
+                'name'      => $faker->name,
+                'rating'    => 1000
             ]);
         }
 

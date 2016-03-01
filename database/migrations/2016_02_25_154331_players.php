@@ -21,6 +21,7 @@ class Players extends Migration
                 $table->increments('id');
 
                 $table->string('name', 1024);
+                $table->decimal('rating', 10 );
 
                 $table->timestamps();
             });
