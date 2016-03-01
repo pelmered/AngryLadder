@@ -79,6 +79,8 @@ abstract class ApiController extends Controller
 
     function respond( $data, $headers = [] )
     {
+        $headers['Access-Control-Allow-Origin'] = 'http://angryladder.dev';
+
         return response()->json( $data, $this->getStatusCode(), $headers );
     }
 
