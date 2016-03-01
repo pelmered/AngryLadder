@@ -5,17 +5,154 @@
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<title></title>
 	<link rel="stylesheet" href="/assets/css/kube.css">
+	<link rel="stylesheet" href="/assets/css/style.css">
 	<script src="/bower_components/react/react.js"></script>
 	<script src="/bower_components/react/react-dom.js"></script>
 	<script src="/assets/js/helloworld.js"></script>
 </head>
 <body>
-
-	<row>
-		<column cols="4">hejhej</column>
-		<column cols="4">hejhej</column>
-		<column cols="4">hejhej</column>
-	</row>
-	
+	<header class="site-header">
+		<row>
+		<column cols="4"></column>
+			<column cols="4" class="text-centered"><h1 class="brand">AngryLadder</h1>
+			</column>
+			<column cols="4" class="text-centered"><a href="#" class="btn" type="primary">Lägg till match</a>	
+			</column>
+		</row>
+	</header>
+	<div class="container">
+	<h2 class="text-centered">Tabell</h2>
+		<table class="table-stripped table-responsive">
+		<thead>
+			<tr>
+				<th>
+					Namn
+				</th>
+				<th>
+					Spelade matcher
+				</th>
+				<th>
+					Vinster
+				</th>
+				<th>
+					Förluster
+				</th>
+				<th>
+					Poäng
+				</th>
+			</tr>
+		</thead>
+	    <tbody>
+	        <tr>
+	            <td data-label="Namn">Viktor</td>
+	            <td data-label="Spelade matcher">5</td>
+	            <td data-label="Vinster">5</td>
+	            <td data-label="Förluster">0</td>
+	            <td data-label="Poäng">25</td>
+	        </tr>
+	        <tr>
+	           	<td data-label="Namn">Peter</td>
+	            <td data-label="Spelade matcher">1</td>
+	            <td data-label="Vinster">0</td>
+	            <td data-label="Förluster">1</td>
+				<td data-label="Poäng">5</td>
+	        </tr>
+	        <tr>
+				<td data-label="Namn">Johan</td>
+				<td data-label="Spelade matcher">5</td>
+				<td data-label="Vinster">3</td>
+				<td data-label="Förluster">2</td>
+				<td data-label="Poäng">10</td>
+	        </tr>
+	        <tr>
+				<td data-label="Namn">Samuel</td>
+	            <td data-label="Spelade matcher">1</td>
+	            <td data-label="Vinster">0</td>
+	            <td data-label="Förluster">1</td>
+				<td data-label="Poäng">1</td>
+	        </tr>
+	        <tr>
+				<td data-label="Namn">Markus</td>
+	            <td data-label="Spelade matcher">5</td>
+	            <td data-label="Vinster">5</td>
+	            <td data-label="Förluster">0</td>
+				<td data-label="Poäng">25</td>
+	        </tr>
+	    </tbody>
+	</table>
+	<h2 class="text-centered">Senaste matcher</h2>
+	<table class="table-bordered">
+		<thead>
+			<tr>
+				<th>
+					Match
+				</th>
+				<th>
+					Sett
+				</th>
+				<th>
+					Vinnare
+				</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr>
+				<td data-label="Match">
+					Viktor vs Samuel
+				</td>
+				<td data-label="Sett">
+					11-5, 14-12
+				</td>
+				<td data-label="Vinnare">
+					Viktor
+				</td>
+			</tr>
+			<tr>
+				<td data-label="Match">
+					Viktor vs Samuel
+				</td>
+				<td data-label="Sett">
+					11-5, 14-12
+				</td>
+				<td data-label="Vinnare">
+					Viktor
+				</td>
+			</tr>
+			<tr>
+				<td data-label="Match">
+					Viktor vs Samuel
+				</td>
+				<td data-label="Sett">
+					11-5, 14-12
+				</td>
+				<td data-label="Vinnare">
+					Viktor
+				</td>
+			</tr>
+			<tr>
+				<td data-label="Match">
+					Viktor vs Samuel
+				</td>
+				<td data-label="Sett">
+					11-5, 14-12
+				</td>
+				<td data-label="Vinnare">
+					Viktor
+				</td>
+			</tr>
+			<tr>
+				<td data-label="Match">
+					Viktor vs Samuel
+				</td>
+				<td data-label="Sett">
+					11-5, 14-12
+				</td>
+				<td data-label="Vinnare">
+					Viktor
+				</td>
+			</tr>
+		</tbody>
+	</table>
+	</div>
 </body>
 </html>
