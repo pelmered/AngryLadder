@@ -1,0 +1,29 @@
+{
+  "name": "angryladder",
+  "version": "1.0.0",
+  "description": "Based on Lumen",
+  "main": "gulpfile.js",
+  "directories": {
+    "test": "tests"
+  },
+  "scripts": {
+    "test": ""
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://bitbucket.org/angrycreative/angryladder.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "homepage": "https://bitbucket.org/angrycreative/angryladder#readme",
+  "devDependencies": {
+    "gulp": "^3.9.1",
+    "gulp-concat-css": "^2.2.0",
+    "gulp-cssnano": "^2.1.1",
+    "gulp-postcss": "^6.1.0",
+    "gulp-watch": "^4.3.5",
+    "postcss": "^5.0.18",
+    "postcss-cssnext": "^2.4.0",
+    "precss": "^1.4.0"
+  }
+}
