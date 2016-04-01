@@ -21,6 +21,30 @@ abstract class ApiController extends Controller
 
     protected $statusCode = 200;
 
+    protected function getQueryLimit()
+    {
+        $limit = (int) Input::get('limit') ?: 5;
+
+        if( $limit > 50 || $limit == 0 )
+        {
+            $limit = 10;
+        }
+
+        return $limit;
+    }
+
+    protected function getCurrentPage()
+    {
+        $page = (int )Input::get('page') ?: 5;
+
+        if( $page > 50 || $page == 0 )
+        {
+            $page = 10;
+        }
+
+        return $page;
+    }
+
     /**
      * @return mixed
      */
@@ -91,14 +115,13 @@ abstract class ApiController extends Controller
 
     function respondWithPagination( LengthAwarePaginator $paginator, $data, $headers = [] )
     {
-        $currentPage = Input::get('page');
+        $currentPage = $this->getCurrentPage();
+        $limit = $this->getQueryLimit();
 
         if( empty($data) || $currentPage > ceil( $paginator->total() / $paginator->perPage() ) || $currentPage < 0 )
         {
             $this->setStatusCode(404);
         }
-
-        $limit  = (int) Input::get('limit');
 
         $limitStr = '';
 
@@ -106,8 +129,6 @@ abstract class ApiController extends Controller
         {
             $limitStr = '&limit='.$limit;
         }
-
-
 
         $data = array_merge( $data, [
             'pagination' => [

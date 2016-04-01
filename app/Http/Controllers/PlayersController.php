@@ -66,12 +66,8 @@ class PlayersController extends ApiController
      */
     public function index()
     {
-        $limit = Input::get('limit') ?: 5;
+        $limit = $this->getQueryLimit();
 
-        if( $limit > 50 )
-        {
-            $limit = 10;
-        }
         $players = Player::paginate($limit);
 
         return $this->respondWithPagination( $players, [
@@ -81,19 +77,8 @@ class PlayersController extends ApiController
 
     public function top( $type = 'toprated' )
     {
-        $page   = (int) Input::get('page') ?: 1;
-        $limit  = (int) Input::get('limit') ?: 10;
-
-        // Default
-        if( empty($limit) || $limit == 0 )
-        {
-            $limit = 10;
-        }
-        // Max
-        elseif( $limit > 100 )
-        {
-            $limit = 100;
-        }
+        $page = $this->getCurrentPage();
+        $limit = $this->getQueryLimit();
 
         $offset = ($page * $limit) - $limit;
 
@@ -104,9 +89,8 @@ class PlayersController extends ApiController
                 $join->orOn('games.player2', '=', 'players.id');
             })
             ->where('rating', '!=', 1000)
-            ->groupBy('players.id');
-
-
+            ->groupBy('players.id')
+            ->skip($offset)->take($limit);
 
         switch( $type )
         {
@@ -129,17 +113,17 @@ class PlayersController extends ApiController
          * If we use Query Builder with groupBy we need to create custom pagination
          * https://laravel.com/docs/5.1/pagination#basic-usage
          */
-        $Paginator = collect($players);
-        $pagedData = $Paginator->slice($offset, $limit)->all();
-        $Paginator = new \Illuminate\Pagination\LengthAwarePaginator($pagedData, count($Paginator), $limit, $page);
+        $paginator = collect($players);
+        $pagedData = $paginator->slice($offset, $limit)->all();
+        $paginator = new \Illuminate\Pagination\LengthAwarePaginator($pagedData, count($paginator), $limit, $page);
 
 
-        return $this->respondWithPagination( $Paginator, [
+        return $this->respondWithPagination( $paginator, [
             'meta'  => [
-                'type'      => 'toplist',
+                'list'  => 'toplist',
                 'type'  => $type
             ],
-            'data' => $players->all()
+            'data' => $players->get()
         ]);
     }
 

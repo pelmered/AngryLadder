@@ -71,12 +71,8 @@ class GamesController extends ApiController
      */
     public function index()
     {
-        $limit = Input::get('limit') ?: 5;
+        $limit = $this->getQueryLimit();
 
-        if( $limit > 50 )
-        {
-            $limit = 10;
-        }
         $games = Game::with('player1','player2')->paginate($limit);
 
         return $this->respondWithPagination( $games, [
