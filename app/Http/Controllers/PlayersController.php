@@ -151,12 +151,24 @@ class PlayersController extends ApiController
      */
     public function store(Request $request)
     {
+        //TODO: Better validation
+
+        if( strlen( $request->name ) < 5 )
+        {
+            return 'error';
+        }
+
         $player = Player::create([
             'name'      => $request->name,
-            'ranking'   => 1000
+            'slack_id'      => $request->name,
+            'slack_name'      => $request->name,
+            'rating'   => 1000
         ]);
 
-        return $this->respond([
+        return $this->setStatusCode(201)->respond([
+            'meta' => [
+                'message' => 'Player created with ID: ' . $player->id
+            ],
             'data' => $player
         ]);
     }
