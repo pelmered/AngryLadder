@@ -81,7 +81,6 @@ class PlayersController extends ApiController
         $page   = (int) Input::get('page') ?: 1;
         $limit  = (int) Input::get('limit') ?: 10;
 
-
         // Default
         if( empty($limit) || $limit == 0 )
         {
@@ -108,7 +107,7 @@ class PlayersController extends ApiController
 
             case 'mostgames':
 
-                //$players = Plugin::orderBy('weighted_rating', 'desc')->get();
+                //TODO
                 $players = Player::whereNotNull('rating')
                     ->where('rating', '!=', 1000)
                     ->orderBy('rating', 'desc')

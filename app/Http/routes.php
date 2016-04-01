@@ -40,6 +40,7 @@ $app->group([
     $app->get('/', ['uses' => 'PlayersController@index']);
 
     $app->get('/top', ['uses' => 'PlayersController@top']);
+    $app->get('/top/{type}', ['uses' => 'PlayersController@top']);
 
     $app->get('/{id}', 'PlayersController@show');
 
