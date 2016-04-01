@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\Config;
 
 class Player extends Model
 {
-    protected $fillable = array('name');
+    protected $fillable = array('name', 'ranking');
     //protected $appends = array('banner');
 
     /**
@@ -28,7 +28,7 @@ class Player extends Model
     }
 
 
-    public function plugins()
+    public function games()
     {
         return $this->belongsToMany('App\Game');
     }

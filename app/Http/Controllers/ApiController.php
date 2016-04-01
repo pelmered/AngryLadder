@@ -8,7 +8,8 @@ use App\Http\Requests;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Response;
 */
-use Illuminate\Pagination\LengthAwarePaginator;
+#use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\Input;
 
 
@@ -93,6 +94,17 @@ abstract class ApiController extends Controller
             $this->setStatusCode(404);
         }
 
+        $limit  = (int) Input::get('limit');
+
+        $limitStr = '';
+
+        if( $limit )
+        {
+            $limitStr = '&limit='.$limit;
+        }
+
+
+
         $data = array_merge( $data, [
             'pagination' => [
                 'total_count'   => (int) $paginator->total(),
@@ -100,8 +112,8 @@ abstract class ApiController extends Controller
                 'current_page'  => (int) $currentPage,
                 'limit'         => (int) $paginator->perPage(),
 
-                'prev_link'     => $paginator->previousPageUrl(),
-                'next_link'     => $paginator->nextPageUrl()
+                'prev_link'     => $paginator->previousPageUrl().$limitStr,
+                'next_link'     => $paginator->nextPageUrl().$limitStr
             ]
         ]);
 

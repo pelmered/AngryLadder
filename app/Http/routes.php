@@ -15,25 +15,12 @@ $app->get('/', function () use ($app) {
     return view('index');
 });
 
+$app->group([
+        'prefix' => 'v1/games',
+        'namespace' => 'App\Http\Controllers',
+        'middleware' => 'throttle:30000'
+    ], function() use ($app) {
 
-$app->get('example/{id}', 'ExampleController@show');
-
-/*
-$app->get('/v1/game', function () use ($app) {
-    return 'lol';
-});
-*/
-
-/*
-// Plugin list, can optionally include some meta and the most important metrics
-$app->get('/v1/games', function () use ($app) {
-    return 'lol';
-});
-*/
-
-
-
-$app->group(['prefix' => 'v1/games', 'namespace' => 'App\Http\Controllers', 'middleware' => 'throttle:30000'], function() use ($app) {
     $app->get('/', ['uses' => 'GamesController@index']);
 
     $app->get('/{id}', 'GamesController@show');
@@ -41,20 +28,24 @@ $app->group(['prefix' => 'v1/games', 'namespace' => 'App\Http\Controllers', 'mid
     $app->post('/', 'GamesController@store');
 
     $app->put('/{id}', 'GamesController@update');
-
-
 });
 
 
-/*
-$app->get('/v1/games', [
-    'middleware' => 'throttle:30',
-    'uses' => 'GamesController@index'
-]);
-*/
+$app->group([
+        'prefix' => 'v1/players',
+        'namespace' => 'App\Http\Controllers',
+        'middleware' => 'throttle:30000'
+    ], function() use ($app) {
 
+    $app->get('/', ['uses' => 'PlayersController@index']);
 
-//$app->get('v1/games/challenge', 'ExampleController@index');
+    $app->get('/top', ['uses' => 'PlayersController@top']);
 
+    $app->get('/{id}', 'PlayersController@show');
+
+    $app->post('/', 'PlayersController@store');
+
+    $app->put('/{id}', 'PlayersController@update');
+});
 
 

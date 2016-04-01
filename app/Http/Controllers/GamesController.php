@@ -8,7 +8,8 @@ use App\Http\Requests;
 use Illuminate\Support\Facades\Input;
 
 use Illuminate\Support\Facades\DB;
-use Illuminate\Pagination\LengthAwarePaginator;
+#use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 
 //Models
 use App\Game;
@@ -50,7 +51,7 @@ class GamesController extends ApiController
      */
     public function show( $id )
     {
-        $game = Game::with('player1')->with('player2')->find( $id );
+        $game = Game::with('player1', 'player2')->find( $id );
 
         if( !$game )
         {
@@ -70,35 +71,17 @@ class GamesController extends ApiController
      */
     public function index()
     {
-        $games = Game::with('player1')->with('player2')->get();
+        $limit = Input::get('limit') ?: 5;
 
-/*
-        $games = DB::table('games')
-            ->leftJoin('player', 'games.player1', '=', 'players.id')
-            ->leftJoin('player2', 'games.player2', '=', 'players.id')
-            ->get();
-*/
-        return $this->respond([
-            'data' => $games->all()
-        ]);
-
-
-
-        $limit = 10;
-
-
-        $limit = Input::get('limit') ?: 10;
-
-        if( $limit > 100 )
+        if( $limit > 50 )
         {
-            $limit = 100;
+            $limit = 10;
         }
-        $games = Game::with('contributor','tag')->paginate($limit);
+        $games = Game::with('player1','player2')->paginate($limit);
 
         return $this->respondWithPagination( $games, [
             'data' => $games->all()
         ]);
-
     }
 
     /**
@@ -118,13 +101,19 @@ class GamesController extends ApiController
 
         $game = Game::create($data);
 
-        /*
         $elo = new Elo( );
-        $elo->calculateGame( $game );
-        */
+        $new_rankings = $elo->calculateGame( $game );
 
-        $data['ranking1'] = 16;
-        $data['ranking2'] = -12;
+        $player1 = Player::find( $game->player1 );
+        $player2 = Player::find( $game->player2 );
+
+        $player1->adjustRating ( $new_rankings['player1'] );
+        $player2->adjustRating ( $new_rankings['player2'] );
+
+
+        $data = ['id' => $game->id] + $data;
+        $data['ranking1'] = $new_rankings['player1'];
+        $data['ranking2'] = $new_rankings['player2'];
 
         return $this->respond([
             'data' => $data
