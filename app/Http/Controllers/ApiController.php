@@ -48,6 +48,10 @@ abstract class ApiController extends Controller
     {
         return $this->setStatusCode(500)->respondWithError( $message );
     }
+    function respondNotImplemented( $message = 'Planned feature, but not implemented yet. ' )
+    {
+        return $this->setStatusCode(501)->respondWithError( $message );
+    }
 
     function respondWithError( $message )
     {

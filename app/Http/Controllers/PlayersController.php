@@ -182,7 +182,7 @@ class PlayersController extends ApiController
      */
     public function update(Request $request, $id)
     {
-        //
+        return $this->respondNotImplemented();
     }
 
     /**
@@ -193,6 +193,6 @@ class PlayersController extends ApiController
      */
     public function destroy($id)
     {
-        //
+        return $this->respondNotImplemented();
     }
 }
