@@ -7,6 +7,9 @@ use Illuminate\Http\Request;
 use App\Http\Requests;
 use Illuminate\Support\Facades\Input;
 
+use Illuminate\Pagination\LengthAwarePaginator;
+#use Illuminate\Contracts\Pagination\LengthAwarePaginator;
+
 //Models
 use App\Game;
 use App\Player;
@@ -94,80 +97,49 @@ class PlayersController extends ApiController
 
         $offset = ($page * $limit) - $limit;
 
+        $players = Player::select( DB::raw('players.*, count(games.id) AS gamecount') )
+            ->join('games', function($join)
+            {
+                $join->on('games.player1', '=', 'players.id');
+                $join->orOn('games.player2', '=', 'players.id');
+            })
+            ->where('rating', '!=', 1000)
+            ->groupBy('players.id');
+
+
+
         switch( $type )
         {
             case 'toprated':
 
-
-                //$players = Plugin::orderBy('weighted_rating', 'desc')->get();
-                $players = Player::whereNotNull('rating')
-                    ->orderBy('rating', 'desc')
-                    ->paginate($limit);
-
+                $players->orderBy('rating', 'desc');
 
             case 'mostgames':
 
-                //TODO
-                $players = Player::whereNotNull('rating')
-                    ->where('rating', '!=', 1000)
-                    ->orderBy('rating', 'desc')
-                    ->paginate($limit);
+                $players->orderBy('gamecount', 'desc');
 
                 break;
 
             default:
 
-
-
                 break;
-
         }
 
-
-        $limit = Input::get('limit') ?: 5;
-
-        if( $limit > 50 )
-        {
-            $limit = 10;
-        }
-        $players = Player::paginate($limit);
-
-        return $this->respondWithPagination( $players, [
-            'data' => $players->all()
-        ]);
-
-        /*
-        $query = array_map( function($value) {
-            return (array) $value;
-        }, $query );
-        */
-
-        if( empty($players) )
-        {
-            $this->setStatusCode(404);
-        }
+        /**
+         * If we use Query Builder with groupBy we need to create custom pagination
+         * https://laravel.com/docs/5.1/pagination#basic-usage
+         */
+        $Paginator = collect($players);
+        $pagedData = $Paginator->slice($offset, $limit)->all();
+        $Paginator = new \Illuminate\Pagination\LengthAwarePaginator($pagedData, count($Paginator), $limit, $page);
 
 
-        return $this->respond([
-            'data' => $players->all()
-        ]);
-
-        /*
-        var_dump($players);
-*/
-
-        //var_dump((array) $players);
-
-        return $this->respondWithPagination( $players, [
+        return $this->respondWithPagination( $Paginator, [
             'meta'  => [
                 'type'      => 'toplist',
-                'sub_type'  => $type
+                'type'  => $type
             ],
-            'data'  => $this->pluginTransformer->transformCollection(
-                $players->all(),
-                'TopRated',
-                [ 'rankOffset' => $offset + 1 ]
-            )
+            'data' => $players->all()
         ]);
     }
 
