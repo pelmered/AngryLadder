@@ -142,7 +142,7 @@ abstract class ApiController extends Controller
             ]
         ]);
 
-        return $this->respond( $data );
+        return $this->respond( $data, $headers );
     }
 
 
