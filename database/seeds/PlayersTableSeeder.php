@@ -3,6 +3,8 @@
 use Illuminate\Database\Seeder;
 use Faker\Factory AS Faker;
 
+use App\Player;
+
 class PlayersTableSeeder extends Seeder {
 
     
@@ -10,16 +12,18 @@ class PlayersTableSeeder extends Seeder {
     {
         $faker = Faker::create();
 
-        $slack_names = ['peter', 'grod', 'viktor', 'cluez' ]
-
         foreach( range(1, 10 ) as $index )
         {
-            DB::table('players')->insert([
-                'name'          => $faker->name,
+            $firstName = $faker->firstName();
+            $lastName = $faker->lastName();
+
+            //DB::table('players')->insert([
+            $player = Player::create([
+                'name'          => $firstName . '_' . $lastName,
                 'email'         => $faker->email,
                 'avatar_url'    => $faker->imageUrl(200, 200, 'cats'),
-                'slack_id'      => '',
-                'slack_name'    => $slack_names[rand(0,)],
+                'slack_id'      => $faker->numberBetween(10000, 99999),
+                'slack_name'    => $firstName,
                 'rating'        => 1000
             ]);
         }

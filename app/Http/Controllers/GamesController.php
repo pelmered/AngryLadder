@@ -104,8 +104,8 @@ class GamesController extends ApiController
         $elo = new Elo( );
         $new_rankings = $elo->calculateGame( $game );
 
-        $player1 = Player::find( $game->player1 );
-        $player2 = Player::find( $game->player2 );
+        $player1 = Player::getByIDorSlackID( $game->player1 );
+        $player2 = Player::getByIDorSlackID( $game->player2 );
 
         $player1->adjustRating ( $new_rankings['player1'] );
         $player2->adjustRating ( $new_rankings['player2'] );

@@ -46,7 +46,9 @@ class PlayersController extends ApiController
      */
     public function show( $id )
     {
-        $player = Player::find( $id );
+        //$player = Player::find( $id );
+
+        $player = Player::getByIDorSlackID( $id );
 
         if( !$player )
         {

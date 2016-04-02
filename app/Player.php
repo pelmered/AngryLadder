@@ -7,19 +7,23 @@ use Illuminate\Support\Facades\Config;
 
 class Player extends Model
 {
-    protected $fillable = array('name', 'ranking');
-    //protected $appends = array('banner');
+    protected $fillable = array('name', 'slack_id', 'slack_name', 'ranking');
 
-    /**
-     * Plugin path
-     * @param string $path Plugin path
-     * @param null $tag Optionally, a plugin tag
-     */
-    function load( $path, $tag = null )
+    public static function getByIDorSlackID( $id )
     {
 
+        $player = self::where(function($query) use ($id) {
+            $query->where('id',         '=', $id)
+                ->orWhere('slack_id',   '=', $id)
+                ->orWhere('slack_name', '=', $id);
+            })
+            ->orderBy('name', 'desc')
+            //->take(1)
+            ->get();
+
+        return $player;
     }
-    
+
     public function adjustRating( $adjustment )
     {
         $this->rating += $adjustment;
