@@ -90,6 +90,8 @@ class GamesController extends ApiController
      */
     public function store(Request $request)
     {
+
+        //TODO: move to model
         $data = [
             'player1'   => $request->player1,
             'player2'   => $request->player2,

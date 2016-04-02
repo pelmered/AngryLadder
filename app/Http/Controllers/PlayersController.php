@@ -30,7 +30,7 @@ class PlayersController extends ApiController
     {
         if( empty($msg) )
         {
-            return parent::respondNotFound( 'Plugin not found' );
+            return parent::respondNotFound( 'Player not found' );
         }
         else
         {
@@ -143,10 +143,10 @@ class PlayersController extends ApiController
         }
 
         $player = Player::create([
-            'name'      => $request->name,
-            'slack_id'      => $request->name,
-            'slack_name'      => $request->name,
-            'rating'   => 1000
+            'name'          => $request->name,
+            'slack_id'      => $request->slack_id,
+            'slack_name'    => $request->slack_name,
+            'rating'        => 1000
         ]);
 
         return $this->setStatusCode(201)->respond([

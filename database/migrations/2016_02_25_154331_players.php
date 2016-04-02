@@ -20,7 +20,12 @@ class Players extends Migration
             Schema::create('players', function ($table) {
                 $table->increments('id');
 
-                $table->string('name', 1024);
+                $table->string('name');
+                $table->string('email');
+                $table->string('avatar_url');
+                $table->string('slack_id');
+                $table->string('slack_name');
+
                 $table->decimal('rating', 10 );
 
                 $table->timestamps();
