@@ -73,7 +73,9 @@ class GamesController extends ApiController
     {
         $limit = $this->getQueryLimit();
 
-        $games = Game::with('player1','player2')->paginate($limit);
+        $games = Game::with('player1','player2')
+            ->orderBy('updated_at', 'desc')
+            ->paginate($limit);
 
         return $this->respondWithPagination( $games, [
             'data' => $games->all()
