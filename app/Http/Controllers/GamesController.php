@@ -111,7 +111,11 @@ class GamesController extends ApiController
         $data['ranking1'] = $new_rankings['player1'];
         $data['ranking2'] = $new_rankings['player2'];
 
-        return $this->respond([
+
+        return $this->setStatusCode(201)->respond([
+            'meta' => [
+                'message' => 'Game created with ID: ' . $game->id
+            ],
             'data' => $data
         ]);
     }
