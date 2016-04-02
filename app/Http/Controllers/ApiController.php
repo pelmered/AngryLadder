@@ -25,7 +25,7 @@ abstract class ApiController extends Controller
 
     protected function getQueryLimit()
     {
-        $limit = (int) Input::get('limit') ?: 5;
+        $limit = (int) Input::get('limit') ?: 10;
 
         if( $limit > 50 || $limit == 0 )
         {
@@ -37,11 +37,11 @@ abstract class ApiController extends Controller
 
     protected function getCurrentPage()
     {
-        $page = (int )Input::get('page') ?: 5;
+        $page = (int) Input::get('page') ?: 1;
 
-        if( $page > 50 || $page == 0 )
+        if( $page == 0 )
         {
-            $page = 10;
+            $page = 1;
         }
 
         return $page;
