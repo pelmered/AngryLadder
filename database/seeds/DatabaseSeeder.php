@@ -18,7 +18,7 @@ class DatabaseSeeder extends Seeder
 
         //Eloquent::ungard();
 
-        $tables = ['Game', 'Player'];
+        $tables = ['Player','Game'];
 
         Game::truncate();
         Player::truncate();

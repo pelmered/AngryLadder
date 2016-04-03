@@ -13,6 +13,8 @@ use Illuminate\Http\Response;
 #use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\Input;
+//use Illuminate\Contracts\Validation\Validator;
+use Illuminate\Validation\Validator;
 
 
 use Laravel\Lumen\Routing\Controller as BaseController;

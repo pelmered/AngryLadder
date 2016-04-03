@@ -12,18 +12,11 @@ class Games extends Migration
      */
     public function up()
     {
-        /**
-         * Main plugins table
-         */
         if(!Schema::hasTable('games')) {
             Schema::create('games', function ($table) {
                 $table->increments('id');
 
-                $table->integer('player1')->unsigned();
-                $table->integer('player2')->unsigned();
-
-                $table->integer('score1')->unsigned();
-                $table->integer('score2')->unsigned();
+                $table->integer('winner')->unsigned();
 
                 $table->timestamps();
             });

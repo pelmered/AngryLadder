@@ -12,6 +12,30 @@ class Player extends Model
     public static function getByIDorSlackID( $id )
     {
 
+        if( is_array($id) )
+        {
+            $keys = ['id', 'slack_id', 'slack_name'];
+
+            $found = false;
+
+            foreach($keys AS $key)
+            {
+                if( isset($id[$key]) )
+                {
+                    $id = $id[$key];
+
+                    $found = true;
+
+                    break;
+                }
+            }
+
+            if( !$found )
+            {
+                return false;
+            }
+        }
+
         $player = self::where(function($query) use ($id) {
             $query->where('id',         '=', $id)
                 ->orWhere('slack_id',   '=', $id)
@@ -19,9 +43,36 @@ class Player extends Model
             })
             ->orderBy('name', 'desc')
             //->take(1)
-            ->get();
+            ->get()->first();
 
         return $player;
+    }
+
+    public static function getPlayersFromJSON($players)
+    {
+        $_players = [];
+
+        foreach($players AS $_player)
+        {
+            if( is_numeric($_player) && intval($_player) > 0)
+            {
+                $player = self::find( $_player );
+            }
+            else if( is_array($_player) )
+            {
+                $player = self::getByIDorSlackID($_player);
+            }
+
+            if( empty($player) )
+            {
+                return ['error' => $_player];
+            }
+
+            $_players[] = $player;
+
+        }
+
+        return $_players;
     }
 
     public function adjustRating( $adjustment )

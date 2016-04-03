@@ -19,11 +19,11 @@ class PlayersTableSeeder extends Seeder {
 
             //DB::table('players')->insert([
             $player = Player::create([
-                'name'          => $firstName . '_' . $lastName,
+                'name'          => $firstName . ' ' . $lastName,
                 'email'         => $faker->email,
                 'avatar_url'    => $faker->imageUrl(200, 200, 'cats'),
                 'slack_id'      => $faker->numberBetween(10000, 99999),
-                'slack_name'    => $firstName,
+                'slack_name'    => strtolower($firstName),
                 'rating'        => 1000
             ]);
         }
