@@ -18,6 +18,9 @@ class Games extends Migration
 
                 $table->integer('winner')->unsigned();
 
+                $table->integer('rating_adjustment_player1');
+                $table->integer('rating_adjustment_player2');
+
                 $table->timestamps();
             });
         }

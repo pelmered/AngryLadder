@@ -122,12 +122,15 @@ class GamesController extends ApiController
 
         $game = Game::with('players', 'sets')->find( $game->id );
 
+        $data = $game->toArray();
+
+
 
         return $this->setStatusCode(201)->respond([
             'meta' => [
                 'message' => 'Game created with ID: ' . $game->id
             ],
-            'data' => $game
+            'data' => $data
         ]);
 
         print_r($game);

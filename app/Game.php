@@ -6,6 +6,8 @@ use Illuminate\Database\Eloquent\Model;
 //use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\DB;
 
+use App\AngryLadder\Elo;
+
 class Game extends Model
 {
     protected $fillable = array('winner');
@@ -108,12 +110,23 @@ class Game extends Model
 
 
         // Add sets with relation to game
-        //print_r(get_class($game->sets()));
-
         foreach($sets AS $set)
         {
             $game->sets()->create( $set );
         }
+
+        //$data = $game->toArray();
+
+        $elo = new Elo( );
+        $new_rankings = $elo->calculateGame( $game );
+
+        $players[0]->adjustRating ( $new_rankings['player1'] );
+        $players[1]->adjustRating ( $new_rankings['player2'] );
+
+        $game->rating_adjustment_player1 = $new_rankings['player1'];
+        $game->rating_adjustment_player2 = $new_rankings['player2'];
+
+        $game->save();
 
         return $game;
     }

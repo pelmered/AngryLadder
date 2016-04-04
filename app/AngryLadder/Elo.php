@@ -33,10 +33,22 @@ class Elo
 
     public function calculateGame( \App\Game $game )
     {
-        $player1 = Player::find( $game->player1 );
-        $player2 = Player::find( $game->player2 );
+        //$player1 = Player::find( $game->player1 );
+        //$player2 = Player::find( $game->player2 );
 
-        if( !$player1 || !$player2 )
+        $players = $game->players()->get()->toArray();
+        $players = $game->players()->get();
+
+        $player1 = $players->first();
+        $player2 = $players->last();
+
+
+        $players = $game->players()->get();
+
+        $player1 = $players->first();
+        $player2 = $players->last();
+
+        if( !$players || !$player2 )
         {
             die('Player not found');
         }
@@ -47,19 +59,19 @@ class Elo
         $denom = ($qScore1 + $qScore2);
 
 
-        if( $game->score1 > $game->score2 )
+        if( $game->winner == 1 )
         {
             $result1 = 1;
             $result2 = 0;
         }
-        else if( $game->score1 < $game->score2 )
+        else if( $game->winner == 2 )
         {
             $result1 = 0;
             $result2 = 1;
         }
         else
         {
-            //tie?
+            return;
         }
 
         return [
