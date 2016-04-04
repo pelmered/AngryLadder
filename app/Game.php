@@ -16,24 +16,20 @@ class Game extends Model
     {
         return $this->belongsToMany('App\Player');
     }
+
     public function sets()
     {
         return $this->hasMany('App\Set');
     }
 
-
-
     public static function createNewgame( $playerData, $scoreData )
     {
-
-
         $winner = 0;
         $p1 = 0;
         $p2 = 0;
 
         $sets = [];
 
-        //while( $win == false )
         foreach( $scoreData AS $score )
         {
             $set = [
@@ -67,7 +63,6 @@ class Game extends Model
         if( $winner < 0 )
         {
             return ['error' => 'No winner in game. Plz play moar!' ];
-            //return $this->respondWithError( 'No winner in game. Plz play moar!' );
         }
 
 
@@ -76,7 +71,6 @@ class Game extends Model
         if( isset($players['error']) )
         {
             return ['error' => 'Error: Player could not be found: ' . print_r($players['error'], true) ];
-            //return $this->respondWithError( 'Error: Player could not be found: ' . print_r($players['error'], true) );
         }
 
         $p = 0;
@@ -101,8 +95,6 @@ class Game extends Model
         ]);
 
         // Add sets with relation to game
-        //print_r(get_class($game->players()));
-
         foreach($players AS $player)
         {
             $game->players()->attach( $player->id );
