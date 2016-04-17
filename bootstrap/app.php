@@ -27,6 +27,10 @@ $app->withFacades();
 
 $app->withEloquent();
 
+
+
+$app->register(RedisServiceProvider::class);
+
 /*
 |--------------------------------------------------------------------------
 | Register Container Bindings
