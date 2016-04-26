@@ -82,11 +82,12 @@ class PlayersController extends ApiController
 
         $offset = ($page * $limit) - $limit;
 
-        $players = Player::select( DB::raw('players.*, count(games.id) AS gamecount') )
-            ->join('games', function($join)
+        $players = Player::select( DB::raw('players.*, count(game_player.player_id) AS gamecount') )
+        //$players = Player::select( DB::raw('players.*') )
+
+            ->join('game_player', function($join)
             {
-                $join->on('games.player1', '=', 'players.id');
-                $join->orOn('games.player2', '=', 'players.id');
+                $join->on('game_player.player_id', '=', 'players.id');
             })
             ->where('rating', '!=', 1000)
             ->groupBy('players.id')
