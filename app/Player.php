@@ -2,12 +2,20 @@
 
 namespace App;
 
+
+use DB;
+
+
+#use Illuminate\Database\DB;
+
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Config;
 
 class Player extends Model
 {
-    protected $fillable = array('name', 'slack_id', 'slack_name', 'ranking');
+    protected $fillable = array('name', 'email', 'avatar_url', 'slack_id', 'slack_name', 'ranking', 'added_from');
+
+    protected $dates = ['deleted_at'];
 
     public static function getByIDorSlackID( $id )
     {
