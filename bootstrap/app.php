@@ -27,9 +27,8 @@ $app->withFacades();
 
 $app->withEloquent();
 
-
-
-$app->register(RedisServiceProvider::class);
+#$app->configure('database');
+#$app->register(RedisServiceProvider::class);
 
 /*
 |--------------------------------------------------------------------------
@@ -86,6 +85,7 @@ $app->routeMiddleware([
 |
 */
 
+$app->register(Illuminate\Redis\RedisServiceProvider::class);
 // $app->register(App\Providers\AppServiceProvider::class);
 // $app->register(App\Providers\AuthServiceProvider::class);
 // $app->register(App\Providers\EventServiceProvider::class);
