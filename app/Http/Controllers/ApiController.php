@@ -22,8 +22,15 @@ use Laravel\Lumen\Routing\Controller as BaseController;
 abstract class ApiController extends Controller
 {
 
+    function __construct()
+    {
+
+    }
+
 
     protected $statusCode = 200;
+    protected $errorCode = '';
+    protected $errorDetails = '';
 
     protected function getQueryLimit()
     {
@@ -49,6 +56,43 @@ abstract class ApiController extends Controller
         return $page;
     }
 
+
+    function validate( Request $request, array $rules, array $messages = [], array $customAttributes = [] )
+    {
+        $validator = $this->getValidationFactory()->make($request->all(), $rules, $messages, $customAttributes);
+
+        if ($validator->fails()) {
+
+            $errors = $this->formatValidationErrors($validator);
+
+            return $this->setStatusCode(400)
+                ->setErrorCode('VALIDATION_ERROR')
+                ->setErrorDetails($errors['detail'])
+                ->respondWithError($errors['title']);
+        }
+
+        return true;
+    }
+
+    protected function formatValidationErrors(Validator $validator)
+    {
+        $errors = $validator->errors()->getMessages();
+
+        $fields = 'Validation failed for: '.implode(', ', array_keys($errors));
+
+        $errorString = '';
+
+        foreach( $errors AS $field => $error )
+        {
+            $errorString .= ucfirst($field).': '.implode(', ', $error).' ';
+        }
+
+        return [
+            'title'     => $fields,
+            'detail'    => $errorString
+        ];
+    }
+
     /**
      * @return mixed
      */
@@ -67,27 +111,60 @@ abstract class ApiController extends Controller
         return $this;
     }
 
+    public function getErrorCode()
+    {
+        if( empty( $this->errorCode ) )
+        {
+            return 'GENERAL_ERROR';
+        }
+        return $this->errorCode;
+    }
+    /**
+     * @param mixed $errorsCode
+     */
+    public function setErrorCode($errorsCode)
+    {
+        $this->errorCode = $errorsCode;
+
+        return $this;
+    }
+
+
+    function getErrorDetails()
+    {
+        return $this->errorDetails;
+    }
+
+    function setErrorDetails($errorDetails)
+    {
+        $this->errorDetails = $errorDetails;
+
+        return $this;
+    }
 
     function respondNotFound( $message = 'Not found' )
     {
-        return $this->setStatusCode(404)->respondWithError( $message );
+        return $this->setStatusCode(404)->setErrorCode('NOT_FOUND_ERROR')->respondWithError( $message );
     }
     function respondInternalError( $message = 'Internal Error' )
     {
-        return $this->setStatusCode(500)->respondWithError( $message );
+        return $this->setStatusCode(500)->setErrorCode('INTERNAL_ERROR')->respondWithError( $message );
     }
     function respondNotImplemented( $message = 'Planned feature, but not implemented yet. ' )
     {
-        return $this->setStatusCode(501)->respondWithError( $message );
+        return $this->setStatusCode(501)->setErrorCode('NOT_IMPLEMENTED_ERROR')->respondWithError( $message );
     }
 
     function respondWithError( $message )
     {
 
         return $this->respond([
-            'error' => [
-                'message'       => $message,
-                'status_code'   => $this->getStatusCode()
+            'status'    => 'error',
+            'errors'     => [
+                'code'      => $this->getErrorCode(),
+                'status'    => $this->getStatusCode(),
+                'title'     => $message,
+                'detail'    => $this->getErrorDetails()
             ]
         ]);
 
@@ -112,6 +189,11 @@ abstract class ApiController extends Controller
 
     function respond( $data, $headers = [] )
     {
+        if( !isset($data['status'] ) )
+        {
+            $data = ['status' => 'ok'] + $data;
+        }
+
         $headers['Access-Control-Allow-Origin'] = 'http://angryladder.dev';
 
         return response()->json( $data, $this->getStatusCode(), $headers );
@@ -133,6 +215,7 @@ abstract class ApiController extends Controller
         {
             $limitStr = '&limit='.$limit;
         }
+
 
         $data = array_merge( $data, [
             'pagination' => [

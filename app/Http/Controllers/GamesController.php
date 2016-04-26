@@ -86,25 +86,35 @@ class GamesController extends ApiController
      */
     public function store(Request $request)
     {
-        $this->validate($request, [
+
+        $valid = $this->validate($request, [
             'players' => 'required',
-            'scores' => 'required',
+            'sets' => 'required',
         ]);
 
+        if( $valid !== true )
+        {
+            return $valid;
+        }
+
         $playerData = $request->players;
-        $scoreData = $request->scores;
+        $setsData = $request->sets;
 
         if( count($playerData) != 2 )
         {
             return $this->respondWithError( 'Can only be two players in pingpong!' );
         }
 
-        if( count($scoreData) != 3 )
+        $setsCount = count($setsData);
+
+        if( $setsCount != 2 && $setsCount != 3 )
         {
-            return $this->respondWithError( 'Official ladder matches must have 3 sets!' );
+            return $this->respondWithError( 'Official ladder matches must have 2 or 3 sets!' );
         }
 
-        $game = Game::createNewgame( $playerData, $scoreData );
+        $playerData = Player::getPlayersFromJSON($playerData);
+
+        $game = Game::createNewGame( $playerData, $setsData );
 
         if( isset( $game['error'] ) )
         {

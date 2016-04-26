@@ -23,7 +23,7 @@ class PlayersController extends ApiController
 
     function __construct( )
     {
-
+        parent::__construct();
     }
 
     function respondNotFound( $msg = '' )
