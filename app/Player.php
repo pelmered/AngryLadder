@@ -55,6 +55,28 @@ class Player extends Model
 
         return $player;
     }
+    
+    public static function getByAny( $data )
+    {
+        $allowed_keys = ['id', 'slack_id', 'slack_name', 'email'];
+
+        $data = array_filter($data, function($e) use ($allowed_keys) {
+            return in_array($e, $allowed_keys);
+        }, ARRAY_FILTER_USE_KEY);
+
+        $player = self::where(function($query) use ($data) {
+                foreach( $data AS $filed_key => $field_value )
+                {
+                    $query->orWhere($filed_key, '=', $field_value);
+                }
+
+            })
+            ->orderBy('name', 'desc')
+            //->take(1)
+            ->get()->first();
+
+        return $player;
+    }
 
     public static function getPlayersFromJSON($players)
     {
