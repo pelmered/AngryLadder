@@ -22,7 +22,7 @@ class Game extends Model
         return $this->hasMany('App\Set');
     }
 
-    public static function createNewgame( $playerData, $scoreData )
+    public static function createNewGame($players, $scoreData )
     {
         $winner = 0;
         $p1 = 0;
@@ -65,9 +65,6 @@ class Game extends Model
             return ['error' => 'No winner in game. Plz play moar!' ];
         }
 
-
-        $players = Player::getPlayersFromJSON($playerData);
-
         if( isset($players['error']) )
         {
             return ['error' => 'Error: Player could not be found: ' . print_r($players['error'], true) ];
@@ -75,7 +72,7 @@ class Game extends Model
 
         $p = 0;
 
-        foreach($playerData AS $player)
+        foreach($players AS $player)
         {
 
             if( is_array($player) )

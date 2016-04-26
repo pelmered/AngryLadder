@@ -42,7 +42,6 @@ class Elo
         $player1 = $players->first();
         $player2 = $players->last();
 
-
         $players = $game->players()->get();
 
         $player1 = $players->first();
