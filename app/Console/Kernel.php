@@ -14,6 +14,8 @@ class Kernel extends ConsoleKernel
      */
     protected $commands = [
         //
+
+        \App\Console\Commands\SlackUserSync::class,
     ];
 
     /**
@@ -24,6 +26,17 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-        //
+
+
+
+        $filePath = storage_path('logs/slack_user_sync.log');
+
+
+
+        $schedule->command('slack:usersync')
+            ->daily()
+            ->appendOutputTo($filePath);
+
+
     }
 }

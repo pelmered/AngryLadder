@@ -49,4 +49,12 @@ $app->group([
     $app->put('/{id}', 'PlayersController@update');
 });
 
+$app->group([
+    'prefix' => 'slack',
+    'namespace' => 'App\Http\Controllers'
+], function() use ($app) {
+
+    $app->get('/authorize', ['uses' => 'SlackController@authorizeSlack']);
+    $app->get('/callback', ['uses' => 'SlackController@callback']);
+});
 

@@ -24,7 +24,8 @@ class PlayersTableSeeder extends Seeder {
                 'avatar_url'    => $faker->imageUrl(200, 200, 'cats'),
                 'slack_id'      => $faker->numberBetween(10000, 99999),
                 'slack_name'    => strtolower($firstName),
-                'rating'        => 1000
+                'rating'        => 1000,
+                'added_from'    => 'seed'
             ]);
         }
 

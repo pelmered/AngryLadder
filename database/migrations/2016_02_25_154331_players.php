@@ -23,12 +23,16 @@ class Players extends Migration
                 $table->string('name');
                 $table->string('email');
                 $table->string('avatar_url');
-                $table->string('slack_id');
-                $table->string('slack_name');
+                $table->string('slack_id', 20);
+                $table->string('slack_name', 50);
 
-                $table->decimal('rating', 10 );
+                $table->decimal('rating', 10 )->default(1000);
+
+
+                $table->string('added_from', 20);
 
                 $table->timestamps();
+                $table->softDeletes();
             });
         }
     }
