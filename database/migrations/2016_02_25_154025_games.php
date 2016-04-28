@@ -17,7 +17,7 @@ class Games extends Migration
                 $table->increments('id');
 
                 $table->tinyInteger('winner')->unsigned()->default(0);;
-                $table->enum('status', array('challenge', 'accepted', 'finished'))->default('challenge');
+                $table->enum('status', array('challenge', 'accepted', 'completed', 'confirmed'))->default('challenge');
 
                 $table->decimal('rating_adjustment_player1');
                 $table->decimal('rating_adjustment_player2');

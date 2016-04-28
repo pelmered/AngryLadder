@@ -88,7 +88,8 @@ class Game extends Model
         }
 
         $game = Game::create([
-            'winner'    => $winner
+            'winner'    => $winner,
+            'status'    => 'confirmed'
         ]);
 
         // Add sets with relation to game
