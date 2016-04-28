@@ -187,6 +187,7 @@ class Player extends Model
     public function adjustRating( $adjustment )
     {
         $this->rating += $adjustment;
+        $this->rating_weekly += $adjustment;
 
         $this->save();
     }
