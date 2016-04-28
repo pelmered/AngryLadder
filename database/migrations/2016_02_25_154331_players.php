@@ -27,7 +27,7 @@ class Players extends Migration
                 $table->string('slack_name', 50);
 
                 $table->decimal('rating', 10 )->default(1000);
-                $table->decimal('weekly_rating', 10 )->default(1000);
+                $table->decimal('rating_weekly', 10 )->default(1000);
 
 
                 $table->string('added_from', 20);
