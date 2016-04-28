@@ -78,7 +78,7 @@ class Player extends Model
         return $player;
     }
 
-    public static function getPlayersFromJSON($players)
+    public static function getPlayersFromJSON($players, $createIfNotExist = false)
     {
         $_players = [];
 
@@ -95,14 +95,93 @@ class Player extends Model
 
             if( empty($player) )
             {
-                return ['error' => $_player];
+                if( $createIfNotExist )
+                {
+                    $playerObj = new Player;
+
+                    $allowed_fields = ['name', 'email', 'slack_id', 'slack_name', 'avatar_url'];
+
+
+
+                    foreach( $_player AS $key => $value)
+                    {
+                        if( in_array($key, $allowed_fields))
+                        {
+                            $playerObj->{$key} = $value;
+                        }
+                    }
+
+                    $playerObj->rating = 1000;
+                    $playerObj->rating_weekly = 1000;
+                    $playerObj->added_from = 'slackbot';
+
+                    $playerObj->save();
+
+
+                    $_players[] = $playerObj;
+                }
+                else
+                {
+                    return ['error' => $_player];
+                }
+            }
+            else{
+                $_players[] = $player;
             }
 
-            $_players[] = $player;
 
         }
 
         return $_players;
+    }
+
+    public static function getRank( $playerId )
+    {
+
+
+        $result = DB::select( DB::raw( "
+            SELECT rating_weekly,rating,
+                (
+                    SELECT COUNT(1) AS num
+                    FROM players
+                    WHERE players.rating_weekly > s1.rating_weekly
+                      AND players.rating_weekly != 1000
+                ) + 1 AS weekly,
+                (
+                    SELECT COUNT(1) AS num
+                    FROM players
+                    WHERE players.rating > s1.rating
+                      AND players.rating != 1000
+                ) + 1 AS alltime
+                FROM players AS s1
+	            WHERE ID = :playerId
+            ORDER BY rating desc
+        " ), [
+            'playerId' => $playerId
+        ] );
+
+
+        if( isset( $result[0]->alltime )) {
+            $rank = new Rank();
+
+            if ($result[0]->rating_weekly == 1000)
+            {
+
+            }
+            if ($result[0]->rating == 1000)
+            {
+
+            }
+            $rank->weekly = ($result[0]->rating_weekly == 1000 ? '-' : $result[0]->weekly) ;
+            $rank->allTime = ($result[0]->rating == 1000 ? '-' : $result[0]->alltime) ;
+
+            return $rank;
+
+
+            return $result[0]->rank;
+        }
+
+        return false;
     }
 
     public function adjustRating( $adjustment )

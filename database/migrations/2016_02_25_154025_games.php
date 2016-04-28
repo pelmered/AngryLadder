@@ -16,10 +16,11 @@ class Games extends Migration
             Schema::create('games', function ($table) {
                 $table->increments('id');
 
-                $table->integer('winner')->unsigned();
+                $table->tinyInteger('winner', 1)->unsigned()->default(0);
+                $table->enum('status', array('challenge', 'accepted', 'finished'))->default('challenge');
 
-                $table->integer('rating_adjustment_player1');
-                $table->integer('rating_adjustment_player2');
+                $table->smallInteger('rating_adjustment_player1', 4);
+                $table->smallInteger('rating_adjustment_player2', 4);
 
                 $table->timestamps();
             });

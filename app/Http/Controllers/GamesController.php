@@ -10,6 +10,17 @@ use Illuminate\Support\Facades\Input;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 
+
+use League\Fractal\Manager;
+use League\Fractal\Resource\Collection;
+use League\Fractal\Resource\Item;
+
+use League\Fractal\Serializer\ArraySerializer;
+
+//Transformers
+use App\Transformers\ApiSerializer;
+use App\Transformers\GameTransformer;
+
 //Models
 use App\Game;
 use App\Player;
@@ -45,8 +56,28 @@ class GamesController extends ApiController
      * @param  int  $id
      * @return Response
      */
-    public function show( $id )
+    //public function show( $id )
+
+    public function show(Manager $fractal, GameTransformer $gameTransformer, $gameId)
     {
+        $fractal->setSerializer(new ApiSerializer());
+
+        $game = game::find( $gameId );
+
+        if( !$game )
+        {
+            return $this->respondNotFound( );
+        }
+
+        $item = new Item($game, $gameTransformer);
+
+        $data = $fractal->createData($item)->toArray();
+
+        return $this->respond($data);
+
+
+
+
         $game = Game::with('players', 'sets')->find( $id );
 
         if( !$game )
@@ -65,8 +96,23 @@ class GamesController extends ApiController
      *
      * @return Response
      */
-    public function index()
+    public function index(Manager $fractal, GameTransformer $gameTransformer)
     {
+        $fractal->setSerializer(new ApiSerializer());
+
+        $limit = $this->getQueryLimit();
+
+        $games = Game::orderBy('updated_at', 'desc')->paginate($limit);
+
+        $collection = new Collection($games, $gameTransformer);
+
+        $data = $fractal->createData($collection)->toArray();
+
+        return $this->respondWithPagination($games,$data);
+
+
+    //public function index()
+    //{
         $limit = $this->getQueryLimit();
 
         $games = Game::with('players', 'sets')
@@ -112,7 +158,7 @@ class GamesController extends ApiController
             return $this->respondWithError( 'Official ladder matches must have 2 or 3 sets!' );
         }
 
-        $playerData = Player::getPlayersFromJSON($playerData);
+        $playerData = Player::getPlayersFromJSON($playerData, true);
 
         $game = Game::createNewGame( $playerData, $setsData );
 

@@ -17,6 +17,12 @@ use Illuminate\Support\Facades\Input;
 use Illuminate\Validation\Validator;
 
 
+use League\Fractal\Manager;
+use League\Fractal\Resource\Collection;
+use League\Fractal\Resource\Item;
+
+
+
 use Laravel\Lumen\Routing\Controller as BaseController;
 
 abstract class ApiController extends Controller

@@ -46,6 +46,7 @@ class SlackUserSync extends Command {
         $updateIfExists = $this->argument('updateIfExists');
 
 
+        // https://api.slack.com/methods/users.list
         $client = new Guzzle();
         $res = $client->request('GET', 'https://slack.com/api/users.list?token='.$token);
 

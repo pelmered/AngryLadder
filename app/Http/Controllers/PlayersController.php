@@ -7,14 +7,26 @@ use Illuminate\Http\Request;
 use App\Http\Requests;
 use Illuminate\Support\Facades\Input;
 
+
 use Illuminate\Pagination\LengthAwarePaginator;
 #use Illuminate\Contracts\Pagination\LengthAwarePaginator;
+
+
+use League\Fractal\Manager;
+use League\Fractal\Resource\Collection;
+use League\Fractal\Resource\Item;
+
+//Transformers
+use App\Transformers\ApiSerializer;
+use App\Transformers\PlayerTransformer;
 
 //Models
 use App\Game;
 use App\Player;
 
 use App\AngryLadder\Elo;
+
+
 
 
 class PlayersController extends ApiController
@@ -44,8 +56,63 @@ class PlayersController extends ApiController
      * @param  int  $id
      * @return Response
      */
-    public function show( $id )
+    public function show(Manager $fractal, PlayerTransformer $playerTransformer, $playerId)
     {
+
+        $fractal->setSerializer(new ApiSerializer());
+        //$player = $this->player->findOrFail($playerId);
+
+        $player = Player::getByIDorSlackID( $playerId );
+
+        $item = new Item($player, $playerTransformer);
+
+        $data = $fractal->createData($item)->toArray();
+
+        return $this->respond($data);
+    }
+
+
+    /*
+    public function show(Item $fractal, PlayerTransformer $playerTransformer, $id )
+    {
+
+
+        $limit = $this->getQueryLimit();
+
+        //$players = Player::paginate($limit);
+
+        $player = Player::getByIDorSlackID( $id );
+
+        $data = new Item($player, $playerTransformer);
+        var_dump($data);
+
+
+        return $this->respond([
+            'data' => $data
+        ]);
+
+
+            $data =  $fractal->item($player, $playerTransformer);
+
+        return $this->respond([
+            'data' => $data
+        ]);
+
+        $data = $fractal->createData($collection)->toArray();
+
+        $collection = new Collection($player, $playerTransformer);
+
+        $data = $fractal->createData($collection)->toArray();
+
+
+        return $this->respond([
+            'data' => $data
+        ]);
+
+
+        return $this->respondWithPagination($players,$data);
+
+
         $player = Player::getByIDorSlackID( $id );
 
         if( !$player )
@@ -53,10 +120,15 @@ class PlayersController extends ApiController
             return $this->respondNotFound( );
         }
 
+
+        echo ( Player::getRank( $player->id )) ;
+
+
         return $this->respond([
             'data' => $player
         ]);
     }
+    */
 
 
     /**
@@ -64,19 +136,45 @@ class PlayersController extends ApiController
      *
      * @return Response
      */
-    public function index()
+    //public function index()
+    public function index(Manager $fractal, PlayerTransformer $playerTransformer)
     {
+        $fractal->setSerializer(new ApiSerializer());
+
         $limit = $this->getQueryLimit();
 
         $players = Player::paginate($limit);
 
+        $collection = new Collection($players, $playerTransformer);
+
+        $data = $fractal->createData($collection)->toArray();
+
+        return $this->respondWithPagination($players,$data);
+
+
         return $this->respondWithPagination( $players, [
-            'data' => $players->all()
+            'data' => $playerTransformer->transform( $players )
         ]);
+
+
+        //'data' => $this->pluginTransformer->transformCollection( $plugins->all() )
+
+
+
+        $projects = $this->project->with(['notes.links'])->get();
+
+        $collection = new Collection($projects, $playerTransformer);
+
+        $data = $fractal->createData($collection)->toArray();
+
+        return $this->respond($data);
+
     }
 
-    public function top( $type = 'toprated' )
+    public function top( Manager $fractal, PlayerTransformer $playerTransformer, $type = 'toprated' )
     {
+        $fractal->setSerializer(new ApiSerializer());
+
         $page = $this->getCurrentPage();
         $limit = $this->getQueryLimit();
 
@@ -99,12 +197,12 @@ class PlayersController extends ApiController
 
                 $players->orderBy('rating', 'desc');
 
+                break;
             case 'mostgames':
 
                 $players->orderBy('gamecount', 'desc');
 
                 break;
-
             default:
 
                 break;
@@ -114,17 +212,21 @@ class PlayersController extends ApiController
          * If we use Query Builder with groupBy we need to create custom pagination
          * https://laravel.com/docs/5.1/pagination#basic-usage
          */
+
         $paginator = collect($players);
         $pagedData = $paginator->slice($offset, $limit)->all();
         $paginator = new \Illuminate\Pagination\LengthAwarePaginator($pagedData, count($paginator), $limit, $page);
 
+        $collection = new Collection( $players->get(), $playerTransformer, false);
+
+        $data = $fractal->createData($collection)->toArray();
 
         return $this->respondWithPagination( $paginator, [
             'meta'  => [
                 'list'  => 'toplist',
                 'type'  => $type
             ],
-            'data' => $players->get()
+            'data' => $data
         ]);
     }
 

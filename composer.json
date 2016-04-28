@@ -10,7 +10,8 @@
         "vlucas/phpdotenv": "~2.2",
 	"predis/predis": "^1.0",
         "illuminate/redis": "^5.2",
-        "league/oauth2-client": "^1.4"
+        "league/oauth2-client": "^1.4",
+        "league/fractal": "^0.13.0"
     },
     "require-dev": {
         "fzaninotto/faker": "~1.4",
