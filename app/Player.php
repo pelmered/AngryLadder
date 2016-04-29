@@ -202,6 +202,7 @@ class Player extends Model
 
         $stats = new PlayerStats();
 
+        $stats->games_played            = 0;
         $stats->wins                    = 0;
         $stats->loses                   = 0;
         $stats->set_wins                = 0;
@@ -216,8 +217,8 @@ class Player extends Model
 
         foreach( $games AS $game )
         {
-
-
+            $stats->games_played++;
+            
             $game_array = Game::with('players', 'sets')->find($game->id)->toArray();
 
             $player_num = ( $game_array['players'][0]['id'] == $playerId ? 1 : 2 );
