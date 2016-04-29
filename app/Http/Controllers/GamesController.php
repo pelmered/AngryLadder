@@ -100,13 +100,32 @@ class GamesController extends ApiController
     {
         $fractal->setSerializer(new ApiSerializer());
 
+
         $limit = $this->getQueryLimit();
 
-        $games = Game::orderBy('updated_at', 'desc')->paginate($limit);
+        if (isset($_GET['player'])) {
+
+            $playerId = $_GET['player'];
+
+            $games = Player::getByIDorSlackID($playerId);
+
+            if( !$games )
+            {
+                return $this->respondNotFound( );
+            }
+
+            $games = $games->games()->orderBy('updated_at', 'desc')->paginate($limit); //->paginate($limit);
+
+        }
+        else
+        {
+            $games = Game::orderBy('updated_at', 'desc')->paginate($limit);
+        }
 
         $collection = new Collection($games, $gameTransformer);
 
         $data = $fractal->createData($collection)->toArray();
+
 
         return $this->respondWithPagination($games,$data);
 

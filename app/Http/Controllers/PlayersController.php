@@ -95,25 +95,6 @@ class PlayersController extends ApiController
         $data = $fractal->createData($collection)->toArray();
 
         return $this->respondWithPagination($players,$data);
-
-
-        return $this->respondWithPagination( $players, [
-            'data' => $playerTransformer->transform( $players )
-        ]);
-
-
-        //'data' => $this->pluginTransformer->transformCollection( $plugins->all() )
-
-
-
-        $projects = $this->project->with(['notes.links'])->get();
-
-        $collection = new Collection($projects, $playerTransformer);
-
-        $data = $fractal->createData($collection)->toArray();
-
-        return $this->respond($data);
-
     }
 
     public function top( Manager $fractal, PlayerTransformer $playerTransformer, $type = 'toprated' )
