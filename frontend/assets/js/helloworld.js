@@ -47,9 +47,9 @@ var LadderTable = React.createClass({
 			      	{results.map(function(result) {
 			          	return <tr data-id={result.id}>
 				          	<td data-id="{result.id}">
-				          		Spelare 1: {result.player1.name}
+				          		Spelare 1: {result.players[0].name}
 				          		<br></br>
-				          		Spelare 2: {result.player2.name}
+				          		Spelare 2: {result.players[0].name}
 			          		</td>
 			          	</tr>;
 			        })}
