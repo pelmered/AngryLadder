@@ -99,6 +99,10 @@ class PlayersController extends ApiController
 
     public function top( Manager $fractal, PlayerTransformer $playerTransformer, $type = 'toprated' )
     {
+        if (isset($_GET['include'])) {
+            $fractal->parseIncludes($_GET['include']);
+        }
+
         $fractal->setSerializer(new ApiSerializer());
 
         $page = $this->getCurrentPage();
