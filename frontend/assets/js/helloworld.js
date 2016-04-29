@@ -47,9 +47,11 @@ var LadderTable = React.createClass({
 			      	{results.map(function(result) {
 			          	return <tr data-id={result.id}>
 				          	<td data-id="{result.id}">
-				          		Spelare 1: {result.players[0].name}
-				          		<br></br>
-				          		Spelare 2: {result.players[0].name}
+				          		{result.players[0].name} - {result.players[1].name} :
+
+								{result.sets.map(function(set) {
+									return <span>{set.scores[0]+" - "+set.scores[1]+", "}</span>
+								})}
 			          		</td>
 			          	</tr>;
 			        })}
@@ -58,12 +60,12 @@ var LadderTable = React.createClass({
 	    );
 	  	console.log('success');
 	} else {
-		return <table><tbody><tr data-id="hej"><td>hej</td></tr></tbody></table>;
+		return <table><tbody><tr data-id="hej"><td>error</td></tr></tbody></table>;
 	}
   }
 });
 
 ReactDOM.render(
-  <LadderTable source="http://api.angryladder.dev/v1/games" />,
+  <LadderTable source="http://api.angryladder.elmered.com/v1/games" />,
   document.getElementById('table-ladder')
 );
