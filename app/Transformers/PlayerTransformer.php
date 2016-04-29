@@ -34,7 +34,7 @@ class PlayerTransformer extends TransformerAbstract {
 
     public function includeGames(Player $player)
     {
-        $games = $player->games()->orderBy('updated_at', 'desc')->get();
+        $games = $player->games()->orderBy('updated_at', 'desc')->limit(10)->get();
 
         return $this->collection($games, new GameTransformer);
     }

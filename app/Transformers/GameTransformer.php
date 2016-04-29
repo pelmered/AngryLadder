@@ -44,14 +44,9 @@ class GameTransformer extends TransformerAbstract {
 
     public function includePlayers(Game $game)
     {
-        $player = $game->players;
+        $players = $game->players;
 
-        //var_dump($sets);
-
-        //$fractal->setSerializer(new ArraySerializer());
-        //dd($this->collection($sets, new SetTransformer(), 'test'));
-        //return $this->collection($sets, new SetTransformer());
-        return $this->collection($player, new PlayerTransformer(), false);
+        return $this->collection($players, new PlayerTransformer(), false);
     }
 
 
