@@ -2,6 +2,7 @@
 
 use App\Player;
 use App\Rank;
+use App\PlayerStats;
 use League\Fractal\Resource\Collection;
 use League\Fractal\TransformerAbstract;
 
@@ -10,6 +11,9 @@ class PlayerTransformer extends TransformerAbstract {
     protected $defaultIncludes = [
         'rank'
         //'game'
+    ];
+    protected $availableIncludes = [
+        'stats', 'games'
     ];
 
     public function transform(Player $player)
@@ -28,9 +32,9 @@ class PlayerTransformer extends TransformerAbstract {
     }
 
 
-    public function includeGame(Player $player)
+    public function includeGames(Player $player)
     {
-        $games = $player->games;
+        $games = $player->games()->get();
 
         return $this->collection($games, new GameTransformer);
     }
@@ -42,6 +46,7 @@ class PlayerTransformer extends TransformerAbstract {
         return $this->item($rank, new RankTransformer, false);
 
 
+
         return $this->item(new Rank($rank), new RankTransformer, false);
 
 
@@ -50,6 +55,13 @@ class PlayerTransformer extends TransformerAbstract {
         $rankCollection->add(new Rank($rank));
 
         return $this->collection($rankCollection, new RankTransformer);
+    }
+
+    public function includeStats(Player $player)
+    {
+        $stats = $player::getStats($player->id);
+
+        return $this->item($stats, new PlayerStatsTransformer, false);
     }
 
 }

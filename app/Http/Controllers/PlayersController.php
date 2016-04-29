@@ -23,6 +23,7 @@ use App\Transformers\PlayerTransformer;
 //Models
 use App\Game;
 use App\Player;
+use App\PlayerStats;
 
 use App\AngryLadder\Elo;
 
@@ -58,6 +59,9 @@ class PlayersController extends ApiController
      */
     public function show(Manager $fractal, PlayerTransformer $playerTransformer, $playerId)
     {
+        if (isset($_GET['include'])) {
+            $fractal->parseIncludes($_GET['include']);
+        }
 
         $fractal->setSerializer(new ApiSerializer());
         //$player = $this->player->findOrFail($playerId);
@@ -70,65 +74,6 @@ class PlayersController extends ApiController
 
         return $this->respond($data);
     }
-
-
-    /*
-    public function show(Item $fractal, PlayerTransformer $playerTransformer, $id )
-    {
-
-
-        $limit = $this->getQueryLimit();
-
-        //$players = Player::paginate($limit);
-
-        $player = Player::getByIDorSlackID( $id );
-
-        $data = new Item($player, $playerTransformer);
-        var_dump($data);
-
-
-        return $this->respond([
-            'data' => $data
-        ]);
-
-
-            $data =  $fractal->item($player, $playerTransformer);
-
-        return $this->respond([
-            'data' => $data
-        ]);
-
-        $data = $fractal->createData($collection)->toArray();
-
-        $collection = new Collection($player, $playerTransformer);
-
-        $data = $fractal->createData($collection)->toArray();
-
-
-        return $this->respond([
-            'data' => $data
-        ]);
-
-
-        return $this->respondWithPagination($players,$data);
-
-
-        $player = Player::getByIDorSlackID( $id );
-
-        if( !$player )
-        {
-            return $this->respondNotFound( );
-        }
-
-
-        echo ( Player::getRank( $player->id )) ;
-
-
-        return $this->respond([
-            'data' => $player
-        ]);
-    }
-    */
 
 
     /**

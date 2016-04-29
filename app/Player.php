@@ -184,7 +184,82 @@ class Player extends Model
         return false;
     }
 
-    public function adjustRating( $adjustment )
+
+    public static function getStats( $playerId )
+    {
+        /*
+        $games = Game::with('players', 'sets')
+            ->orderBy('updated_at', 'desc')
+            ->get();
+        */
+
+        $stats = [
+            'wins'          => 0,
+            'loses'         => 0,
+            'set_wins'      => 0,
+            'set_loses'     => 0
+        ];
+
+        $stats = new PlayerStats();
+
+        $stats->wins                    = 0;
+        $stats->loses                   = 0;
+        $stats->set_wins                = 0;
+        $stats->set_loses               = 0;
+        $stats->total_points            = 0;
+        $stats->total_points_against    = 0;
+        $stats->total_points_diff    = 0;
+
+
+        $games = Player::find($playerId)->games()->get();
+
+
+        foreach( $games AS $game )
+        {
+
+
+            $game_array = Game::with('players', 'sets')->find($game->id)->toArray();
+
+            $player_num = ( $game_array['players'][0]['id'] == $playerId ? 1 : 2 );
+
+
+            if( $game_array['winner'] == $player_num )
+            {
+                $stats->wins++;
+            }
+            else
+            {
+                $stats->loses++;
+            }
+
+            foreach( $game_array['sets'] AS $set )
+            {
+                if( $player_num == 1 && $set['score1'] > $set['score2'] )
+                {
+                    $stats->set_wins++;
+                    $stats->total_points += $set['score1'];
+                    $stats->total_points_against += $set['score2'];
+                }
+                else
+                {
+                    $stats->set_loses++;
+                    $stats->total_points += $set['score2'];
+                    $stats->total_points_against += $set['score1'];
+                }
+
+
+            }
+
+        }
+
+        $stats->total_points_diff = $stats->total_points - $stats->total_points_against;
+
+
+        return $stats;
+    }
+
+
+        public function adjustRating( $adjustment )
     {
         $this->rating += $adjustment;
         $this->rating_weekly += $adjustment;
@@ -196,6 +271,16 @@ class Player extends Model
     public function games()
     {
         return $this->belongsToMany('App\Game');
+    }
+
+    public function rank()
+    {
+        return $this->belongsToMany('App\Rank');
+    }
+
+    public function stats()
+    {
+        return $this->belongsToMany('App\PlayerStats');
     }
 
 }
