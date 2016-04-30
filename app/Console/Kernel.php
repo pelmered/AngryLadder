@@ -16,6 +16,7 @@ class Kernel extends ConsoleKernel
         //
 
         \App\Console\Commands\SlackUserSync::class,
+        \App\Console\Commands\RefreshStats::class,
     ];
 
     /**

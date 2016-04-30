@@ -11,6 +11,8 @@ class PlayerStatsTransformer extends TransformerAbstract {
 
         $stats = $playerStats->toArray();
 
+        $stats['updated'] = $stats['updated'];
+
         return $stats;
     }
 

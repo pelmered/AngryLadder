@@ -5,7 +5,7 @@ namespace App;
 
 use DB;
 
-
+use Cache;
 #use Illuminate\Database\DB;
 
 use Illuminate\Database\Eloquent\Model;
@@ -45,6 +45,7 @@ class Player extends Model
         }
 
         $player = self::where(function($query) use ($id) {
+
             $query->where('id',         '=', $id)
                 ->orWhere('slack_id',   '=', $id)
                 ->orWhere('slack_name', '=', $id);
@@ -185,19 +186,18 @@ class Player extends Model
     }
 
 
-    public static function getStats( $playerId )
+    public static function getStats( $playerId, $useCache = true )
     {
-        /*
-        $games = Game::with('players', 'sets')
-            ->orderBy('updated_at', 'desc')
-            ->get();
-        */
+
 
         $stats = [
-            'wins'          => 0,
-            'loses'         => 0,
-            'set_wins'      => 0,
-            'set_loses'     => 0
+            'wins',
+            'loses',
+            'set_wins',
+            'set_loses',
+            'total_points',
+            'total_points_against',
+            'total_points_diff',
         ];
 
         $stats = new PlayerStats();
@@ -209,7 +209,47 @@ class Player extends Model
         $stats->set_loses               = 0;
         $stats->total_points            = 0;
         $stats->total_points_against    = 0;
-        $stats->total_points_diff    = 0;
+        $stats->total_points_diff       = 0;
+        $stats->updated                 = null;
+
+        if( $useCache )
+        {
+            $refresh = false;
+
+            $attributes = $stats->getAttributes();
+
+            foreach( $attributes AS $stat_key => $value )
+            {
+                $cache = Cache::get('stats_player_'.$playerId.'_'.$stat_key, false);
+
+                if( $cache )
+                {
+                    $stats->$stat_key = $cache;
+                }
+                else
+                {
+                    $refresh = true;
+                    break;
+                }
+
+            }
+
+            if( !$refresh )
+            {
+                return $stats;
+            }
+
+
+        }
+
+        //TODO: Needs rewrite
+        /*
+        $games = Game::with('players', 'sets')
+            ->orderBy('updated_at', 'desc')
+            ->get();
+        */
+
+
 
 
         $games = Player::find($playerId)->games()->get();
@@ -218,7 +258,7 @@ class Player extends Model
         foreach( $games AS $game )
         {
             $stats->games_played++;
-            
+
             $game_array = Game::with('players', 'sets')->find($game->id)->toArray();
 
             $player_num = ( $game_array['players'][0]['id'] == $playerId ? 1 : 2 );
@@ -254,6 +294,8 @@ class Player extends Model
         }
 
         $stats->total_points_diff = $stats->total_points - $stats->total_points_against;
+
+        $stats->updated = time();
 
 
         return $stats;
