@@ -205,8 +205,10 @@ class Player extends Model
         $stats->games_played            = 0;
         $stats->wins                    = 0;
         $stats->loses                   = 0;
+        $stats->win_percent             = 0;
         $stats->set_wins                = 0;
         $stats->set_loses               = 0;
+        $stats->win_percent             = 0;
         $stats->total_points            = 0;
         $stats->total_points_against    = 0;
         $stats->total_points_diff       = 0;
@@ -275,12 +277,18 @@ class Player extends Model
 
             foreach( $game_array['sets'] AS $set )
             {
-                if( $player_num == 1 && $set['score1'] > $set['score2'] )
+                if(
+                    //Win as player 1
+                    ($player_num == 1 && $set['score1'] > $set['score2']) ||
+                    //Win as player 2
+                    ($player_num == 2 && $set['score1'] < $set['score2'])
+                )
                 {
                     $stats->set_wins++;
                     $stats->total_points += $set['score1'];
                     $stats->total_points_against += $set['score2'];
                 }
+                //else, it's a loss
                 else
                 {
                     $stats->set_loses++;
@@ -295,6 +303,16 @@ class Player extends Model
 
         $stats->total_points_diff = $stats->total_points - $stats->total_points_against;
 
+
+        if( $stats->wins > 0 )
+        {
+            $stats->win_percent =  round( 100 * $stats->wins / $stats->games_played, 2);
+        }
+        if( $stats->wins > 0 )
+        {
+            $stats->set_wins_percent = round( 100 * $stats->set_wins / ( $stats->set_wins + $stats->set_loses ), 2);
+        }
+
         $stats->updated = time();
 
 
@@ -302,7 +320,7 @@ class Player extends Model
     }
 
 
-        public function adjustRating( $adjustment )
+    public function adjustRating( $adjustment )
     {
         $this->rating += $adjustment;
         $this->rating_weekly += $adjustment;

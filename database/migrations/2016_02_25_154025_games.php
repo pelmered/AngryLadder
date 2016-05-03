@@ -23,6 +23,9 @@ class Games extends Migration
                 $table->decimal('rating_adjustment_player2');
 
                 $table->timestamps();
+
+
+                $table->index(['winner', 'status']);
             });
         }
     }

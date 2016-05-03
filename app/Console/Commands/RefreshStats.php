@@ -3,7 +3,9 @@
 use Illuminate\Console\Command;
 
 use App\Player;
+use App\Jobs\RefreshPlayerStats;
 use Cache;
+use Illuminate\Support\Facades\Queue;
 
 class RefreshStats extends Command {
 
@@ -35,34 +37,30 @@ class RefreshStats extends Command {
      */
     public function fire()
     {
-        $ttl = 86400;
-
         $players = Player::get();
+
+        $playerCount = 0;
+        $playerFailedCount = 0;
 
         foreach( $players AS $player )
         {
-            $stats = $player::getStats($player->id, false);
+            $queueId = Queue::push(new RefreshPlayerStats( $player ));
 
-            $attributes = $stats->getAttributes();
-
-            print_r($attributes);
-
-            foreach( $attributes AS $stat_key => $stat_value )
+            if( $queueId )
             {
-                Cache::put('stats_player_'.$player->id.'_'.$stat_key, $stat_value, $ttl);
+                $this->info('Job queued for player #'.$player->id);
+                $playerCount++;
             }
-
-            Cache::put('stats_player_'.$player->id.'_'.'updated', time(), $ttl);
-
-            foreach( $attributes AS $stat_key => $stat_value )
+            else
             {
-                $this->info( Cache::get('stats_player_'.$player->id.'_'.$stat_key));
+                $this->error('Error while queuing stat refresh for player #'.$player->id);
+                $playerFailedCount++;
             }
-
-            $this->info('Cache saved for player #'.$player->id);
         }
 
         $this->info('done!');
+        $this->info('Added: '. $playerCount);
+        $this->info('Failed: '. $playerFailedCount);
     }
 
 

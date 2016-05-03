@@ -92,7 +92,7 @@ class Game extends Model
             'status'    => 'confirmed'
         ]);
 
-        // Add sets with relation to game
+        // Add players with relation to game
         foreach($players AS $player)
         {
             $game->players()->attach( $player->id );
@@ -117,6 +117,12 @@ class Game extends Model
         $game->rating_adjustment_player2 = $new_rankings['player2'];
 
         $game->save();
+
+        // Queue recalculation of player stats
+        foreach($players AS $player)
+        {
+            Queue::push(new RefreshPlayerStats( $player ));
+        }
 
         return $game;
     }

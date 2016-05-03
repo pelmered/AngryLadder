@@ -4,6 +4,8 @@ use App\PlayerStats;
 use League\Fractal\Resource\Collection;
 use League\Fractal\TransformerAbstract;
 
+use Carbon\Carbon;
+
 class PlayerStatsTransformer extends TransformerAbstract {
 
     public function transform(PlayerStats $playerStats)
@@ -11,7 +13,8 @@ class PlayerStatsTransformer extends TransformerAbstract {
 
         $stats = $playerStats->toArray();
 
-        $stats['updated'] = $stats['updated'];
+        //$stats['updated'] = $stats['updated'];
+        $stats['updated'] = new Carbon(date("Y-m-d H:i:s", $stats['updated']));
 
         return $stats;
     }

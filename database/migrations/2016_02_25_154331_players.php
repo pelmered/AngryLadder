@@ -13,7 +13,7 @@ class Players extends Migration
     public function up()
     {
         /**
-         * Main plugins table
+         * Main players table
          */
         if(!Schema::hasTable('players')) {
 

@@ -13,10 +13,11 @@ class Kernel extends ConsoleKernel
      * @var array
      */
     protected $commands = [
-        //
-
         \App\Console\Commands\SlackUserSync::class,
+        \App\Console\Commands\ResetLadder::class,
         \App\Console\Commands\RefreshStats::class,
+        \App\Console\Commands\FailedTableCommand::class,
+        \App\Console\Commands\TableCommand::class,
     ];
 
     /**
