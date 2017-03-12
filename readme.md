@@ -2,7 +2,7 @@
 
 Built with Lumen
 
-
+Use together with our slack bot
 
 
 
@@ -26,7 +26,7 @@ Built with Lumen
 ### Postman collection
 
 Download [Postman collection](https://github.com/Angrycreative/AngryLadder/blob/master/AngryLadder.postman_collection.json).
-Save it, import it into your Postman client and set up `url` as an environment variable to test all the endpoints. 
+Save it, import it into your Postman client and set up `url` as an environment variable to test all the endpoints.
 
 
 ## Setup
@@ -44,10 +44,11 @@ Save it, import it into your Postman client and set up `url` as an environment v
 
 
 ## TODO
+ * Some kind of web UI (separate project using the API. React?)
  * Update to latest versions of Lumen and libs (Maybe wait for the 5.5 LTS in August)
- * Implement new Glicko2 ranking calculator
- * Implement support for dynamic ladder periods
- * Fix bugs related to all time vs weekly rankings
+ * Implement new Glicko2 ranking calculator (in progress)
+ * Implement support for dynamic ladder periods (in progress)
+ * Fix bugs related to all time vs weekly rankings (in progress)
  * Unit tests
  * Setup CI tools (TravisCI?)
  * Setup code check tools (Scrutinizer?)
