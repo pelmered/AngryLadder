@@ -1,0 +1,268 @@
+{
+	"variables": [],
+	"info": {
+		"name": "AngryLadder",
+		"_postman_id": "ba458003-e352-e20a-c93a-ff80cec01cca",
+		"description": "",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Create game",
+			"request": {
+				"url": "{{url}}/v1/games",
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"players\": [{\n    \"slack_name\": \"peter\"\n  }, {\n    \"slack_name\": \"johan\"\n  }],\n  \"sets\": [{\n    \"set\": [1, 11]\n  }, {\n    \"set\": [11, 5]\n  }, {\n    \"set\": [1, 11]\n  }]\n}"
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "List Games",
+			"request": {
+				"url": "{{url}}/v1/games",
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					}
+				],
+				"body": {},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "Get game",
+			"request": {
+				"url": "{{url}}/v1/games/1",
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"player1\": 2,\n    \"player2\": 3,\n    \"score1\":  16,\n    \"score2\":  11\n}"
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "Update game",
+			"request": {
+				"url": "{{url}}/v1/players/1",
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"name\": \"my name\",\n}"
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "Update player",
+			"request": {
+				"url": "{{url}}/v1/players/1",
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"name\": \"my name\",\n}"
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "Create player",
+			"request": {
+				"url": "{{url}}/v1/players/",
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"name\": \"Test Name2\",\n    \"slack_id\": \"fdsgdfg\",\n    \"slack_name\": \"pelmered\"\n}"
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "List players",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							"",
+							"tests[\"Status code is 200\"] = responseCode.code === 200;",
+							"",
+							"var json = JSON.parse(responseBody);",
+							"",
+							"var jsonData = json.data;",
+							"var jsonDataLen = jsonData.length;",
+							"",
+							"if( jsonDataLen > 5 ) {",
+							"    jsonDataLen = 5;",
+							"}",
+							"",
+							"for (var i = 0; i < jsonDataLen; i++) {",
+							"    tests[\"Data name set \" + i]          = (typeof jsonData[i].name === 'string');",
+							"    tests[\"Data email set \" + i]         = (typeof jsonData[i].email === 'string');",
+							"    tests[\"Data avatar_url set \" + i]    = (typeof jsonData[i].avatar_url === 'string');",
+							"    tests[\"Data slack_id set \" + i]      = (typeof jsonData[i].slack_id === 'string');",
+							"    tests[\"Data slack_name set \" + i]    = (typeof jsonData[i].slack_name === 'string');",
+							"    tests[\"Data rating set \" + i]        = (typeof jsonData[i].name === 'string');",
+							"}",
+							""
+						]
+					}
+				}
+			],
+			"request": {
+				"url": "{{url}}/v1/players/",
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"name\": \"Test Name2\",\n    \"slack_id\": \"fdsgdfg\",\n    \"slack_name\": \"pelmered\"\n}"
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "Toplist players",
+			"request": {
+				"url": "{{url}}/v1/players/top",
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"name\": \"Test Name2\",\n    \"slack_id\": \"fdsgdfg\",\n    \"slack_name\": \"pelmered\"\n}"
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "Get player",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							"",
+							"tests[\"Status code is 200\"] = responseCode.code === 200;",
+							"",
+							"var json = JSON.parse(responseBody);",
+							"",
+							"var jsonData = json.data;",
+							"var jsonDataLen = jsonData.length;",
+							"",
+							"if( jsonDataLen > 5 ) {",
+							"    jsonDataLen = 5;",
+							"}",
+							"",
+							"tests[\"Data name set\"]          = (typeof jsonData.name === 'string');",
+							"tests[\"Data email set\"]         = (typeof jsonData.email === 'string');",
+							"tests[\"Data avatar_url set\"]    = (typeof jsonData.avatar_url === 'string');",
+							"tests[\"Data slack_id set\"]      = (typeof jsonData.slack_id === 'string');",
+							"tests[\"Data slack_name set\"]    = (typeof jsonData.slack_name === 'string');",
+							"tests[\"Data rating set\"]        = (typeof jsonData.name === 'string');",
+							""
+						]
+					}
+				}
+			],
+			"request": {
+				"url": "{{url}}/v1/players/1",
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"player1\": 2,\n    \"player2\": 3,\n    \"score1\":  16,\n    \"score2\":  11\n}"
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "Create game ID",
+			"request": {
+				"url": "{{url}}/v1/games",
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"players\": [{\n    \"id\": 2\n  }, {\n    \"id\": 3\n  }],\n  \"sets\": [{\n    \"set\": [1, 11]\n  }, {\n    \"set\": [11, 5]\n  }, {\n    \"set\": [1, 11]\n  }]\n}"
+				},
+				"description": ""
+			},
+			"response": []
+		}
+	]
+}

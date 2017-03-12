@@ -23,6 +23,11 @@ Built with Lumen
 /v1/players/{id} (put)
 ```
 
+### Postman collection
+
+Download [Postman collection](https://github.com/Angrycreative/AngryLadder/blob/master/AngryLadder.postman_collection.json).
+Save it, import it into your Postman client and set up `url` as an environment variable to test all the endpoints. 
+
 
 ## Setup
 
