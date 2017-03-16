@@ -12,23 +12,19 @@ use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Input;
 use Illuminate\Support\Facades\Gate;
 
-use League\Fractal\Manager;
-use League\Fractal\Resource\Collection;
-use League\Fractal\Resource\Item;
-
 //Transformers
-use App\Transformers\PlayerTransformer;
+use App\Transformers\MatchTransformer;
 
 //Models
 use App\Match;
 use App\Player;
 
-class PlayersController extends ApiController
+class MatchesController extends ApiController
 {
     protected $response;
 
-    const RESOURCE_MODEL = 'App\Player';
-    const RESOURCE_NAME = 'Player';
+    const RESOURCE_MODEL = 'App\Match';
+    const RESOURCE_NAME = 'Match';
 
     protected $validationRules = [
         'update' => [
@@ -57,7 +53,7 @@ class PlayersController extends ApiController
      * @param MatchTransformer $transformer
      * @return Response
      */
-    public function index(PlayerTransformer $transformer)
+    public function index(MatchTransformer $transformer)
     {
         return $this->getList($transformer);
     }
@@ -68,7 +64,7 @@ class PlayersController extends ApiController
      * @param  int  $id
      * @return Response
      */
-    public function show(PlayerTransformer $transformer, $id)
+    public function show(MatchTransformer $transformer, $id)
     {
         return $this->getSingle($transformer, $id);
     }
@@ -106,12 +102,5 @@ class PlayersController extends ApiController
     {
         return $this->destroyResource($id);
     }
-
-
-    public function stats(  )
-    {
-
-    }
-
 }
 

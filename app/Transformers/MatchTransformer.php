@@ -1,6 +1,6 @@
 <?php namespace App\Transformers;
 
-use App\Game;
+use App\Match;
 use League\Fractal\Resource\Collection;
 use League\Fractal\TransformerAbstract;
 
@@ -11,25 +11,27 @@ use League\Fractal\Resource\Item;
 use League\Fractal\Serializer\ArraySerializer;
 
 
-class GameTransformer extends TransformerAbstract {
+class MatchTransformer extends TransformerAbstract {
 
     protected $defaultIncludes = [
-        'sets', 'players'
+        'sets', 'player1', 'player2'
     ];
 
-    public function transform(Game $game)
+    public function transform(Match $game)
     {
         return [
             'winner'       => $game->winner,
-            'rating_adjustments' => [$game->rating_adjustment_player1,$game->rating_adjustment_player2],   //_player1'       => $game->rating_adjustment_player1,
-            //'rating_adjustment_player2' => $game->rating_adjustment_player2,
+            'rating_adjustments' => [
+                'player1' => $game->rating_adjustment_player1,
+                'player2' => $game->rating_adjustment_player2
+            ],
             'created_at' => $game->created_at
         ];
     }
 
 
 
-    public function includeSets(Game $game)
+    public function includeSets(Match $game)
     {
         $sets = $game->sets;
 
@@ -42,11 +44,17 @@ class GameTransformer extends TransformerAbstract {
     }
 
 
-    public function includePlayers(Game $game)
+    public function includePlayer1(Match $game)
     {
-        $players = $game->players;
+        $player = $game->player1;
 
-        return $this->collection($players, new PlayerTransformer(), false);
+        return $this->item($player, new PlayerTransformer(), false);
+    }
+    public function includePlayer2(Match $game)
+    {
+        $player = $game->player2;
+
+        return $this->item($player, new PlayerTransformer(), false);
     }
 
 

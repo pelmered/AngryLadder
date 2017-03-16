@@ -44,7 +44,7 @@ class PlayerStats extends Model
         {
 
 
-            $game_array = Game::with('players', 'sets')->find($game->id)->toArray();
+            $game_array = Match::with('players', 'sets')->find($game->id)->toArray();
 
             $player_num = ( $game_array['players'][0]['id'] == $playerId ? 1 : 2 );
 

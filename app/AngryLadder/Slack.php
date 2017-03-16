@@ -26,8 +26,8 @@ class Slack
 
         //$provider = new \League\OAuth2\Client\Provider\GenericProvider([
         $provider = new OAuth([
-            'clientId'                => '9873709013.37355526242',    // The client ID assigned to you by the provider
-            'clientSecret'            => 'ebc5ae0ad2d0aa23e3db4288c4b7aa85',   // The client password assigned to you by the provider
+            'clientId'                => $slackClientID,    // The client ID assigned to you by the provider
+            'clientSecret'            => $slackClientSecret,   // The client password assigned to you by the provider
             'redirectUri'             => 'http://api.angryladder.dev/slack/authorize',
             'urlAuthorize'            => 'https://slack.com/oauth/authorize',
             'urlAccessToken'          => 'https://slack.com/api/oauth.access',
@@ -127,7 +127,7 @@ class Slack
 
 
     }
-    
+
     public function getToken(  )
     {
 

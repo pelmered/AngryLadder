@@ -3,13 +3,13 @@
 use Illuminate\Database\Seeder;
 use Faker\Factory AS Faker;
 
-use App\Game;
+use App\Match;
 use App\Player;
 use App\Set;
 
-class GamesTableSeeder extends Seeder {
+class MatchesTableSeeder extends Seeder {
 
-    
+
     public function run(  )
     {
         $faker = Faker::create();
@@ -38,7 +38,7 @@ class GamesTableSeeder extends Seeder {
                 ];
             }
 
-            $game = Game::createNewGame( $playerData, $scoreData );
+            $match = Match::createNewGame( $playerData, $scoreData );
         }
 
 

@@ -16,7 +16,7 @@ class Sets extends Migration
             Schema::create('sets', function ($table) {
                 $table->increments('id');
 
-                $table->integer('game_id')->unsigned();
+                $table->integer('match_id')->unsigned();
 
                 $table->integer('score1')->unsigned();
                 $table->integer('score2')->unsigned();

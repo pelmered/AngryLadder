@@ -10,10 +10,13 @@ use Cache;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Config;
+use pelmered\APIHelper\Traits\APIModel;
 
 class Player extends Model
 {
-    protected $fillable = array('name', 'email', 'avatar_url', 'slack_id', 'slack_name', 'ranking', 'added_from');
+    use APIModel;
+
+    protected $fillable = array('name', 'email', 'avatar_url', 'slack_id', 'slack_name', 'added_from');
 
     protected $dates = ['deleted_at'];
 
@@ -56,7 +59,7 @@ class Player extends Model
 
         return $player;
     }
-    
+
     public static function getByAny( $data )
     {
         $allowed_keys = ['id', 'slack_id', 'slack_name', 'email'];
@@ -136,10 +139,10 @@ class Player extends Model
         return $_players;
     }
 
-    public static function getRank( $playerId )
+    public static function getRanks( $playerId )
     {
 
-
+        /*
         $result = DB::select( DB::raw( "
             SELECT rating_weekly,rating,
                 (
@@ -160,11 +163,41 @@ class Player extends Model
         " ), [
             'playerId' => $playerId
         ] );
+        */
 
 
-        if( isset( $result[0]->alltime )) {
+        $ladders = config('ladder.ladders');
+
+        $subqueries = [];
+        $joins = [];
+
+        foreach( $ladders as $ladder_id => $ladder ) {
+
+            $subqueries[] = "(
+                SELECT COUNT(1)	
+                FROM player_ratings
+                WHERE player_ratings.rating >= $ladder_id.rating
+                    AND player_ratings.rating != 1000
+                    AND player_ratings.ladder = '$ladder_id'
+            ) as " . $ladder_id;
+
+            $joins[] = "INNER JOIN player_ratings AS $ladder_id ON players.id = $ladder_id.player_id AND $ladder_id.ladder = '$ladder_id'";
+        };
+
+        $result = DB::select( DB::raw( '
+            SELECT players.*,' . implode(',', $subqueries) . '
+            FROM players ' .
+            implode(' ', $joins) . '
+            WHERE players.id = :playerId
+        ' ), [
+            'playerId'  => $playerId
+        ] );
+
+
+        if( isset( $result[0]->all_time )) {
             $rank = new Rank();
 
+            /*
             if ($result[0]->rating_weekly == 1000)
             {
 
@@ -173,8 +206,16 @@ class Player extends Model
             {
 
             }
-            $rank->weekly = ($result[0]->rating_weekly == 1000 ? '-' : $result[0]->weekly) ;
-            $rank->allTime = ($result[0]->rating == 1000 ? '-' : $result[0]->alltime) ;
+            */
+
+            foreach( $ladders as $ladder_id => $ladder ) {
+                if( isset( $result[0]->$ladder_id ) ) {
+                    $rank->$ladder_id = $result[0]->$ladder_id;
+                }
+            }
+
+            //var_dump($rank);
+
 
             return $rank;
 
@@ -261,7 +302,7 @@ class Player extends Model
         {
             $stats->games_played++;
 
-            $game_array = Game::with('players', 'sets')->find($game->id)->toArray();
+            $game_array = Match::with('players', 'sets')->find($game->id)->toArray();
 
             $player_num = ( $game_array['players'][0]['id'] == $playerId ? 1 : 2 );
 
@@ -329,14 +370,48 @@ class Player extends Model
     }
 
 
+    public function getRating( $ladder = null )
+    {
+        if( is_null( $ladder ) ) {
+            $ladder = 'all_time';
+        }
+
+        return $this->rating()->where('ladder', $ladder)->first();
+    }
+
+    public function getRatings( )
+    {
+        return $this->rating()->get();
+    }
+
+
+
+
+
+    /**
+     * @param float $r
+     */
+    private function setRating($r)
+    {
+    }
+
+
+
+
     public function games()
     {
-        return $this->belongsToMany('App\Game');
+        return $this->hasMany('App\Match');
+        return $this->belongsToMany('App\Match');
     }
 
     public function rank()
     {
         return $this->belongsToMany('App\Rank');
+    }
+
+    public function rating()
+    {
+        return $this->hasMany('App\PlayerRating');
     }
 
     public function stats()

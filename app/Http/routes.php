@@ -12,30 +12,33 @@
 */
 
 $app->get('/', function () use ($app) {
+    return redirect('v1');
+});
+$app->get('/v1', function () use ($app) {
     return view('index');
 });
 
 $app->group([
-        'prefix' => 'v1/games',
+        'prefix' => 'v1/matches',
         'namespace' => 'App\Http\Controllers',
         'middleware' => 'throttle:30000'
     ], function() use ($app) {
 
-    $app->get('/', ['uses' => 'GamesController@index']);
+    $app->get('/', ['uses' => 'MatchesController@index']);
 
-    $app->get('/{id}', 'GamesController@show');
+    $app->get('/{id}', 'MatchesController@show');
 
-    $app->post('/', 'GamesController@store');
+    $app->post('/', 'MatchesController@store');
 
-    $app->put('/{id}', 'GamesController@update');
+    $app->put('/{id}', 'MatchesController@update');
 });
 
 
 $app->group([
-        'prefix' => 'v1/players',
-        'namespace' => 'App\Http\Controllers',
-        'middleware' => 'throttle:30000'
-    ], function() use ($app) {
+    'prefix' => 'v1/players',
+    'namespace' => 'App\Http\Controllers',
+    'middleware' => 'throttle:30000'
+], function() use ($app) {
 
     $app->get('/', ['uses' => 'PlayersController@index']);
 
@@ -44,10 +47,26 @@ $app->group([
 
     $app->get('/{id}', 'PlayersController@show');
 
+    $app->get('/{id}/stats', 'PlayersController@stats');
+
     $app->post('/', 'PlayersController@store');
 
     $app->put('/{id}', 'PlayersController@update');
 });
+
+$app->group([
+    'prefix' => 'v1',
+    'namespace' => 'App\Http\Controllers',
+    'middleware' => 'throttle:30000'
+], function() use ($app) {
+
+    $app->get('/stats', ['uses' => 'StatsController@index']);
+    $app->get('/top', ['uses' => 'StatsController@top']);
+    $app->get('/top/{type}', ['uses' => 'StatsController@top']);
+
+});
+
+
 
 $app->group([
     'prefix' => 'slack',

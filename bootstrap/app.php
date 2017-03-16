@@ -19,7 +19,12 @@ try {
 |
 */
 
+/*
 $app = new Laravel\Lumen\Application(
+    realpath(__DIR__.'/../')
+);
+*/
+$app = new App\Application(
     realpath(__DIR__.'/../')
 );
 
@@ -28,6 +33,8 @@ $app->withFacades();
 $app->withEloquent();
 
 #$app->configure('database');
+$app->configure('ladder');
+
 #$app->register(RedisServiceProvider::class);
 
 /*
@@ -50,6 +57,13 @@ $app->singleton(
     Illuminate\Contracts\Console\Kernel::class,
     App\Console\Kernel::class
 );
+
+/*
+$app->singleton(
+    Illuminate\Foundation\Bootstrap\ConfigureLogging,
+    App\Bootstrap\ConfigureLogging
+);
+*/
 
 /*
 |--------------------------------------------------------------------------
@@ -86,9 +100,15 @@ $app->routeMiddleware([
 */
 
 $app->register(Illuminate\Redis\RedisServiceProvider::class);
-// $app->register(App\Providers\AppServiceProvider::class);
+$app->register(App\Providers\AppServiceProvider::class);
 // $app->register(App\Providers\AuthServiceProvider::class);
 // $app->register(App\Providers\EventServiceProvider::class);
+
+if ($app->environment() !== 'production') {
+    $app->register(\Barryvdh\LaravelIdeHelper\IdeHelperServiceProvider::class);
+}
+
+
 
 /*
 |--------------------------------------------------------------------------

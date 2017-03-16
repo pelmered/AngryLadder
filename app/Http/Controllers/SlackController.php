@@ -14,7 +14,7 @@ use Illuminate\Pagination\LengthAwarePaginator;
 #use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 
 //Models
-use App\Game;
+use App\Match;
 use App\Player;
 
 use App\AngryLadder\Slack;

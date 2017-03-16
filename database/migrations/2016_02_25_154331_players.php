@@ -26,14 +26,14 @@ class Players extends Migration
                 $table->string('slack_id', 20);
                 $table->string('slack_name', 50);
 
-                $table->decimal('rating', 10 )->default(1000);
-                $table->decimal('rating_weekly', 10 )->default(1000);
 
 
                 $table->string('added_from', 20);
 
                 $table->timestamps();
                 $table->softDeletes();
+
+                $table->index(['email', 'slack_id', 'slack_name']);
             });
         }
     }

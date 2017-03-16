@@ -3,7 +3,7 @@
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class Games extends Migration
+class Matches extends Migration
 {
     /**
      * Run the migrations.
@@ -12,8 +12,8 @@ class Games extends Migration
      */
     public function up()
     {
-        if(!Schema::hasTable('games')) {
-            Schema::create('games', function ($table) {
+        if(!Schema::hasTable('matches')) {
+            Schema::create('matches', function ($table) {
                 $table->increments('id');
 
                 $table->tinyInteger('winner')->unsigned()->default(0);;
@@ -22,10 +22,12 @@ class Games extends Migration
                 $table->decimal('rating_adjustment_player1');
                 $table->decimal('rating_adjustment_player2');
 
+                $table->integer('player1_id')->unsigned();
+                $table->integer('player2_id')->unsigned();
+
                 $table->timestamps();
 
-
-                $table->index(['winner', 'status']);
+                //$table->index(['winner', 'status']);
             });
         }
     }
@@ -37,6 +39,6 @@ class Games extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('games');
+        Schema::dropIfExists('matches');
     }
 }
