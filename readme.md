@@ -1,11 +1,8 @@
 # Angryladder
 
-Built with Lumen
+Built with [Lumen](https://lumen.laravel.com/).
 
-Use together with our slack bot
-
-
-
+Use together with our [Slack bot](https://github.com/Angrycreative/Waldner).
 
 ## API endpoints
 
@@ -27,7 +24,6 @@ Use together with our slack bot
 
 Download [Postman collection](https://github.com/Angrycreative/AngryLadder/blob/master/AngryLadder.postman_collection.json).
 Save it, import it into your Postman client and set up `url` as an environment variable to test all the endpoints.
-
 
 ## Setup
 
